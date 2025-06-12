@@ -1,4 +1,5 @@
 import java.util.Objects;
+import java.util.HashMap;
 
 public class Task {
     private String name;
@@ -9,10 +10,7 @@ public class Task {
     public Task(String name, String description, Status status) {
         this.name = name;
         this.description = description;
-        TaskManager.counterId = TaskManager.counterId + 1;
-        this.id = TaskManager.counterId;
         this.status = status;
-        TaskManager.put(this);
     }
 
     public String getName() {
