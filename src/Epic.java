@@ -3,18 +3,18 @@ import java.util.ArrayList;
 public class Epic extends Task {
     private ArrayList<Subtask> subtasks;
 
-    public Epic(String name, String description, Status status) {
-        super(name, description, status);
+    public Epic(String name, String description) {
+        super(name, description, Status.NEW);
     }
 
     @Override
     public String toString() {
         return "Epic{" +
-                "subtasks=" + this.subtasks +
-                ", name='" + this.getName() + '\'' +
+                "name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", id=" + this.getId() +
                 ", status=" + this.getStatus() +
+                ", subtasks=" + this.subtasks +
                 '}';
     }
 

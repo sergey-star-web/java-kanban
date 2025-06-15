@@ -1,4 +1,3 @@
-import java.util.Objects;
 
 public class Subtask extends Task {
     private Integer idEpic = 0;
@@ -10,11 +9,11 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return "Subtask{" +
-                "idEpic=" + this.idEpic +
-                ", name='" + this.getName() + '\'' +
+                "name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
                 ", id=" + this.getId() +
                 ", status=" + this.getStatus() +
+                ", idEpic=" + this.idEpic +
                 '}';
     }
 
