@@ -1,3 +1,6 @@
+package com.yandex.taskmanagerapp.model;
+
+import com.yandex.taskmanagerapp.service.Status;
 import java.util.Objects;
 
 public class Task {

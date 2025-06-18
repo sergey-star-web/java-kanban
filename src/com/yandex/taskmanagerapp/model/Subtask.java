@@ -1,8 +1,11 @@
+package com.yandex.taskmanagerapp.model;
+
+import com.yandex.taskmanagerapp.service.Status;
 
 public class Subtask extends Task {
     private Integer idEpic = 0;
 
-    protected Subtask(String name, String description, Status status) {
+    public Subtask(String name, String description, Status status) {
         super(name, description, status);
     }
 
