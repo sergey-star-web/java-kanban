@@ -28,10 +28,13 @@ public class Main {
         tm.createTask(task1);
         tm.createTask(task2);
         tm.createEpic(epic1);
-        tm.createSubtask(sub1, epic1.getId());
-        tm.createSubtask(sub2, epic1.getId());
         tm.createEpic(epic2);
-        tm.createSubtask(sub3, epic2.getId());
+        sub1.setIdEpic(epic1.getId());
+        sub2.setIdEpic(epic1.getId());
+        sub3.setIdEpic(epic2.getId());
+        tm.createSubtask(sub1);
+        tm.createSubtask(sub2);
+        tm.createSubtask(sub3);
 
         tasksList = tm.getTasks();
         System.out.println();
