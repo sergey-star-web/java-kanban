@@ -9,6 +9,15 @@ public class Subtask extends Task {
         super(name, description, status);
     }
 
+    public Subtask() {
+    }
+
+    public Subtask(Subtask originalSubtask) {
+        this(originalSubtask.getName(), originalSubtask.getDescription(), originalSubtask.getStatus());
+        this.setId(originalSubtask.getId());
+        this.idEpic = originalSubtask.getIdEpic();
+    }
+
     @Override
     public String toString() {
         return "Subtask{" +

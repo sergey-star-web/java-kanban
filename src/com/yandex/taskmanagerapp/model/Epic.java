@@ -10,6 +10,15 @@ public class Epic extends Task {
         super(name, description, Status.NEW);
     }
 
+    public Epic() {
+    }
+
+    public Epic(Epic originalEpic) {
+        this(originalEpic.getName(), originalEpic.getDescription());
+        this.setId(originalEpic.getId());
+        this.subtasks = originalEpic.getSubtasks();
+    }
+
     @Override
     public String toString() {
         return "Epic{" +

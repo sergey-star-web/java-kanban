@@ -68,8 +68,8 @@ public class Main {
 
         System.out.println();
         historyTasks = tm.getHistory();
+        System.out.println("История просмотров1:");
         for (Task task : historyTasks) {
-            System.out.println("История просмотров1:");
             System.out.println(task);
         }
         System.out.println();
@@ -88,8 +88,8 @@ public class Main {
 
         System.out.println();
         historyTasks = tm.getHistory();
+        System.out.println("История просмотров2:");
         for (Task task : historyTasks) {
-            System.out.println("История просмотров2:");
             System.out.println(task);
         }
         System.out.println();
@@ -105,8 +105,8 @@ public class Main {
 
         System.out.println();
         historyTasks = tm.getHistory();
+        System.out.println("История просмотров3:");
         for (Task task : historyTasks) {
-            System.out.println("История просмотров3:");
             System.out.println(task);
         }
         System.out.println();
