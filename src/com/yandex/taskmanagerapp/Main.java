@@ -3,16 +3,21 @@ package com.yandex.taskmanagerapp;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
+import com.yandex.taskmanagerapp.service.HistoryManager;
+import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
 import com.yandex.taskmanagerapp.service.Status;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager tm = new TaskManager();
+        TaskManager tm = Managers.getDefault();
+        HistoryManager historyManager = Managers.getDefaultHistory();
         ArrayList<Task> tasksList;
         ArrayList<Subtask> subtaskList;
         ArrayList<Epic> epicList;
+        List<Task> historyTasks;
         Task getTask;
         Subtask getSubTask;
         Epic getEpic;
@@ -61,6 +66,14 @@ public class Main {
         getSubTask = tm.getSubtask(sub3.getId());
         System.out.println(getSubTask);
 
+        System.out.println();
+        historyTasks = tm.getHistory();
+        for (Task task : historyTasks) {
+            System.out.println("История просмотров1:");
+            System.out.println(task);
+        }
+        System.out.println();
+
         getSubTask = tm.getSubtask(sub1.getId());
         System.out.println(getSubTask);
 
@@ -72,6 +85,31 @@ public class Main {
 
         getEpic = tm.getEpic(epic2.getId()); // проверяем состояние эпиков
         System.out.println(getEpic);
+
+        System.out.println();
+        historyTasks = tm.getHistory();
+        for (Task task : historyTasks) {
+            System.out.println("История просмотров2:");
+            System.out.println(task);
+        }
+        System.out.println();
+
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+
+        System.out.println();
+        historyTasks = tm.getHistory();
+        for (Task task : historyTasks) {
+            System.out.println("История просмотров3:");
+            System.out.println(task);
+        }
+        System.out.println();
 
         tm.deleteTask(1);
         tm.deleteEpic(6);
