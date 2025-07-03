@@ -101,7 +101,6 @@ public class Main {
         tm.getTask(task1.getId());
         tm.getTask(task1.getId());
         tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
 
         System.out.println();
         historyTasks = tm.getHistory();
