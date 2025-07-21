@@ -71,7 +71,7 @@ public class Main {
         System.out.println("История просмотров1:");
         for (Task task : historyTasks) {
             System.out.println(task);
-        }
+       }
         System.out.println();
 
         getSubTask = tm.getSubtask(sub1.getId());
@@ -92,7 +92,7 @@ public class Main {
         for (Task task : historyTasks) {
             System.out.println(task);
         }
-        System.out.println();
+        System.out.println(historyTasks.getFirst());
 
         tm.getTask(task1.getId());
         tm.getTask(task1.getId());
