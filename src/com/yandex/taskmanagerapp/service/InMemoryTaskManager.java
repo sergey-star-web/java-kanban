@@ -178,7 +178,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Subtask> subtasksInEpic = new ArrayList<>();
         boolean existsNew = false;
         boolean existsDone = false;
-        boolean existsIN_PROGRESS = false;
+        boolean existsInProgress = false;
 
         if (epic != null) {
             if (epic.getSubtasks() != null) {
@@ -192,14 +192,14 @@ public class InMemoryTaskManager implements TaskManager {
                     existsDone  = true;
                 }
                 if (subtask.getStatus() == Status.IN_PROGRESS) {
-                    existsIN_PROGRESS = true;
+                    existsInProgress = true;
                 }
             }
-            if (existsNew && !existsDone && !existsIN_PROGRESS) {
+            if (existsNew && !existsDone && !existsInProgress) {
                 if (epic.getStatus() != Status.NEW) {
                     epic.setStatus(Status.NEW);
                 }
-            } else if (existsDone && !existsNew && !existsIN_PROGRESS) {
+            } else if (existsDone && !existsNew && !existsInProgress) {
                 if (epic.getStatus() != Status.DONE) {
                     epic.setStatus(Status.DONE);
                 }
