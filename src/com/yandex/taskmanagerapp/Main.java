@@ -25,10 +25,10 @@ public class Main {
         Task task1 = new Task("first_task", "non desc", Status.NEW);
         Task task2 = new Task("second_task", "non desc", Status.NEW);
         Epic epic1 = new Epic("first_epic", "non desc");
-        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW );
-        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW );
+        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW);
+        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW);
         Epic epic2 = new Epic("second_epic", "non desc");
-        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW );
+        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW);
 
         tm.createTask(task1);
         tm.createTask(task2);
