@@ -71,7 +71,7 @@ public class Main {
         System.out.println("История просмотров1:");
         for (Task task : historyTasks) {
             System.out.println(task);
-       }
+        }
         System.out.println();
 
         getSubTask = tm.getSubtask(sub1.getId());
@@ -80,29 +80,35 @@ public class Main {
         getTask = tm.getTask(task1.getId());
         System.out.println(getTask);
 
+        getSubTask = tm.getSubtask(sub3.getId());
+        System.out.println(getSubTask);
+
+        System.out.println();
+        historyTasks = tm.getHistory();
+        System.out.println("История просмотров1.5: ");
+        for (Task task11 : historyTasks) {
+            System.out.println(task11);
+        }
+        System.out.println();
+
         getEpic = tm.getEpic(epic1.getId()); // проверяем состояние эпиков
         System.out.println(getEpic);
 
         getEpic = tm.getEpic(epic2.getId()); // проверяем состояние эпиков
         System.out.println(getEpic);
 
-        System.out.println();
         historyTasks = tm.getHistory();
+        System.out.println();
         System.out.println("История просмотров2:");
         for (Task task : historyTasks) {
             System.out.println(task);
         }
-        System.out.println(historyTasks.getFirst());
-
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-
         System.out.println();
+
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+        tm.getTask(task1.getId());
+
         historyTasks = tm.getHistory();
         System.out.println("История просмотров3:");
         for (Task task : historyTasks) {

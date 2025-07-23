@@ -1,4 +1,4 @@
-package com.yandex.taskmanagerapp.test;
+package com.test;
 
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;

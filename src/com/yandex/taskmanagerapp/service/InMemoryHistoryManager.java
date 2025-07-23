@@ -1,62 +1,82 @@
 package com.yandex.taskmanagerapp.service;
 
-import com.yandex.taskmanagerapp.model.LinkedHashMapAnalogue;
 import com.yandex.taskmanagerapp.model.Node;
 import com.yandex.taskmanagerapp.model.Task;
 
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    public static final int MAX_VALUE = 10;
-    private LinkedHashMapAnalogue<Task> historyTasks = new LinkedHashMapAnalogue<>();
-    private HashMap<Integer, Node> placeInspectionTask = new HashMap<>();
+    private HashMap<Integer, Node<Task>> placeInspectionTask = new HashMap<>();
+    private Node tail;
+    private Node head;
 
     @Override
     public void add(Task task) {
-        if (historyTasks.size() < MAX_VALUE) {
-            historyTasks.addFirst(task);
-        } else {
-            historyTasks.removeLast();
-            historyTasks.addFirst(task);
+        if (placeInspectionTask.containsKey(task.getId())) {
+            removeNode(placeInspectionTask.get(task.getId()));
         }
+        linkLast(task);
     }
 
     @Override
     public void remove(int id) {
-        Integer index = 0;
-        for (Task task : historyTasks) {
-            index++;
-            if (task.getId() == id) {
-                historyTasks.remove(index);
-            }
+        if (placeInspectionTask.containsKey(id)) {
+            removeNode(placeInspectionTask.get(id));
         }
     }
 
     @Override
-    public List<Task> getHistory() {
-        ArrayList<Task> newHistoryTasks = new ArrayList<>();
-        for (int i = 0; i < historyTasks.size(); i++) {
-            newHistoryTasks.add(historyTasks.getValue(i));
+    public ArrayList<Task> getHistory() {
+        return getTasks();
+    }
+
+    private void removeNode(Node<Task> node) {
+        if (node == null) return;
+        if (node.getPrev() != null) {
+            node.getPrev().setNext(node.getNext());
+        } else {
+            this.head = node.getNext();
         }
-        return newHistoryTasks;
+        if (node.getNext() != null) {
+            node.getNext().setPrev(node.getPrev());
+        } else {
+            this.tail = node.getPrev();
+        }
+        placeInspectionTask.remove(node.getData().getId());
     }
 
     public void linkLast(Task task) {
-        historyTasks.addLast(task);
+        Node<Task> newNode = new Node<>(this.tail, task,null);
+
+        if (this.tail == null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.setNext(newNode);
+            this.tail = newNode;
+        }
+        placeInspectionTask.put(task.getId(), newNode);
+    }
+
+    public Task getTask(int id) {
+        if (placeInspectionTask.containsKey(id)) {
+            return placeInspectionTask.get(id).getData();
+        }
+        return null;
     }
 
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> newHistoryTasks = new ArrayList<>();
-        for (int i = 0; i < historyTasks.size(); i++) {
-            newHistoryTasks.add(historyTasks.getValue(i));
+        ArrayList<Task> tasks = new ArrayList<>();
+        Node<Task> current = this.tail;
+
+        while (current != null) {
+            tasks.add(current.getData());
+            current = current.getPrev();
         }
-        return newHistoryTasks;
+        return tasks;
     }
 
-    public void removeNode(Node node) {
-        placeInspectionTask.values().remove(node);
+    public int size() {
+        return placeInspectionTask.size();
     }
 }
