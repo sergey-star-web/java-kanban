@@ -5,6 +5,7 @@ import com.yandex.taskmanagerapp.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private HashMap<Integer, Node<Task>> placeInspectionTask = new HashMap<>();
@@ -14,21 +15,11 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (placeInspectionTask.containsKey(task.getId())) {
-            removeNode(placeInspectionTask.get(task.getId()));
+            Node<Task> node = placeInspectionTask.get(task.getId());
+            removeNode(node);
+            placeInspectionTask.remove(node.getData().getId());
         }
-        linkLast(task);
-    }
-
-    @Override
-    public void remove(int id) {
-        if (placeInspectionTask.containsKey(id)) {
-            removeNode(placeInspectionTask.get(id));
-        }
-    }
-
-    @Override
-    public ArrayList<Task> getHistory() {
-        return getTasks();
+        placeInspectionTask.put(task.getId(), linkLast(task));
     }
 
     private void removeNode(Node<Task> node) {
@@ -43,10 +34,22 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             this.tail = node.getPrev();
         }
-        placeInspectionTask.remove(node.getData().getId());
     }
 
-    public void linkLast(Task task) {
+    @Override
+    public void remove(int id) {
+        Node<Task> node = placeInspectionTask.remove(id);
+        if (node != null) {
+            removeNode(node);
+        }
+    }
+
+    @Override
+    public ArrayList<Task> getHistory() {
+        return getTasks();
+    }
+
+    public Node<Task> linkLast(Task task) {
         Node<Task> newNode = new Node<>(this.tail, task,null);
 
         if (this.tail == null) {
@@ -55,14 +58,11 @@ public class InMemoryHistoryManager implements HistoryManager {
             this.tail.setNext(newNode);
             this.tail = newNode;
         }
-        placeInspectionTask.put(task.getId(), newNode);
+        return newNode;
     }
 
     public Task getTask(int id) {
-        if (placeInspectionTask.containsKey(id)) {
-            return placeInspectionTask.get(id).getData();
-        }
-        return null;
+        return Optional.ofNullable(placeInspectionTask.get(id).getData()).orElse(null);
     }
 
     public ArrayList<Task> getTasks() {

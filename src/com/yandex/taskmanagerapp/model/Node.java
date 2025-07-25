@@ -1,9 +1,9 @@
 package com.yandex.taskmanagerapp.model;
 
 public class Node<T> {
-    public T data;
-    public Node next;
-    public Node prev;
+    private T data;
+    private Node next;
+    private Node prev;
 
     public Node(Node prev, T data, Node next) {
         this.data = data;
