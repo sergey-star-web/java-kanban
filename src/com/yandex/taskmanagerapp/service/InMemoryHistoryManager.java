@@ -14,11 +14,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (placeInspectionTask.containsKey(task.getId())) {
-            Node<Task> node = placeInspectionTask.get(task.getId());
-            removeNode(node);
-            placeInspectionTask.remove(node.getData().getId());
-        }
+        Node<Task> node = placeInspectionTask.remove(task.getId());
+        removeNode(node);
         placeInspectionTask.put(task.getId(), linkLast(task));
     }
 
@@ -53,7 +50,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> newNode = new Node<>(this.tail, task,null);
 
         if (this.tail == null) {
-            this.head = this.tail = newNode;
+            this.tail = newNode;
+            this.head = this.tail;
         } else {
             this.tail.setNext(newNode);
             this.tail = newNode;
@@ -62,7 +60,15 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public Task getTask(int id) {
-        return Optional.ofNullable(placeInspectionTask.get(id).getData()).orElse(null);
+        Node<Task> node = placeInspectionTask.get(id);
+        Optional<Task> taskOptional = Optional.ofNullable(node)
+                .map(obj -> {
+                    if (obj.getData() != null) {
+                        return obj.getData();
+                    }
+                    return null;
+                });
+        return taskOptional.orElse(null);
     }
 
     public ArrayList<Task> getTasks() {
@@ -70,7 +76,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> current = this.tail;
 
         while (current != null) {
-            tasks.add(current.getData());
+            tasks.add(getTask(current.getData().getId()));
             current = current.getPrev();
         }
         return tasks;
