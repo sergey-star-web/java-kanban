@@ -1,7 +1,5 @@
 package com.yandex.taskmanagerapp.model;
 
-import java.util.Optional;
-
 public class Node<T> {
     private T data;
     private Node next;
