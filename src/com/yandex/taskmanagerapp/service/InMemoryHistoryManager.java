@@ -61,13 +61,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     public Task getTask(int id) {
         Node<Task> node = placeInspectionTask.get(id);
-        Optional<Task> taskOptional = Optional.ofNullable(node)
-                .map(obj -> {
-                    if (obj.getData() != null) {
-                        return obj.getData();
-                    }
-                    return null;
-                });
+        Optional<Task> taskOptional = Optional.ofNullable(node).map(Node::getData);
         return taskOptional.orElse(null);
     }
 
@@ -76,7 +70,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> current = this.tail;
 
         while (current != null) {
-            tasks.add(getTask(current.getData().getId()));
+            tasks.add(current.getData());
             current = current.getPrev();
         }
         return tasks;
