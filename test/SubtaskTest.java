@@ -1,4 +1,4 @@
-package com.yandex.taskmanagerapp.test;
+package com.test;
 
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.service.Managers;

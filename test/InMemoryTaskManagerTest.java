@@ -1,5 +1,3 @@
-package com.yandex.taskmanagerapp.test;
-
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Task;

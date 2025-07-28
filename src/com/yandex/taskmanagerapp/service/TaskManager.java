@@ -14,13 +14,14 @@ public interface TaskManager {
 
     ArrayList<Epic> getEpics();
 
-    Task getTask(Integer Id);
+    Task getTask(Integer id);
 
-    Subtask getSubtask(Integer Id);
+    Subtask getSubtask(Integer id);
 
-    Epic getEpic(Integer Id);
+    Epic getEpic(Integer id);
 
     ArrayList<Subtask> getSubtasksInEpic(Integer id);
+
     List<Task> getHistory();
 
     void deleteTasks();
