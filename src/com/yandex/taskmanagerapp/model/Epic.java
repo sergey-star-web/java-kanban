@@ -1,7 +1,7 @@
 package com.yandex.taskmanagerapp.model;
 
 import java.util.ArrayList;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 
 public class Epic extends Task {
     private ArrayList<Subtask> subtasks = new ArrayList<>();

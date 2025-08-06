@@ -1,5 +1,6 @@
 package com.yandex.taskmanagerapp.service;
 
+import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
@@ -167,13 +168,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createEpic(Epic epic) { //нужно скорректировать создание эпика
+    public void createEpic(Epic epic) {
         this.counterId++;
         epic.setId(this.counterId);
         epics.put(epic.getId(), epic);
     }
 
-    private void updateStatusInEpic(Integer idEpic) {
+    protected void updateStatusInEpic(Integer idEpic) {
         Epic epic = epics.get(idEpic);
         ArrayList<Subtask> subtasksInEpic = new ArrayList<>();
         boolean existsNew = false;

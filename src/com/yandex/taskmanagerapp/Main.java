@@ -6,7 +6,7 @@ import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.service.HistoryManager;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import java.util.ArrayList;
 import java.util.List;
 
