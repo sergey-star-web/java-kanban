@@ -1,22 +1,23 @@
 package com.yandex.taskmanagerapp;
 
+import com.yandex.taskmanagerapp.exceptions.ManagerSaveException;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
-import com.yandex.taskmanagerapp.service.HistoryManager;
-import com.yandex.taskmanagerapp.service.Managers;
-import com.yandex.taskmanagerapp.service.TaskManager;
+import com.yandex.taskmanagerapp.service.FileBackedTaskManager;
 import com.yandex.taskmanagerapp.enums.Status;
-import java.util.ArrayList;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Main {
     public static void main(String[] args) {
-        TaskManager tm = Managers.getDefault();
-        HistoryManager historyManager = Managers.getDefaultHistory();
-        ArrayList<Task> tasksList;
-        ArrayList<Subtask> subtaskList;
-        ArrayList<Epic> epicList;
+        //TaskManager tm = Managers.getDefault();
+        List<Task> tasksList;
         List<Task> historyTasks;
         Task getTask;
         Subtask getSubTask;
@@ -30,74 +31,80 @@ public class Main {
         Epic epic2 = new Epic("second_epic", "non desc");
         Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW);
 
-        tm.createTask(task1);
-        tm.createTask(task2);
-        tm.createEpic(epic1);
-        tm.createEpic(epic2);
+        FileBackedTaskManager ftm;
+        File file;
+        File fileTestLoad;
+
+        try {
+            file = File.createTempFile("historyTasks", ".csv", new File("C:"));
+            ftm = new FileBackedTaskManager(file);
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время обработки файла.");
+        }
+
+        ftm.createTask(task1);
+        ftm.createTask(task2);
+        ftm.createEpic(epic1);
+        ftm.createEpic(epic2);
         sub1.setIdEpic(epic1.getId());
         sub2.setIdEpic(epic1.getId());
         sub3.setIdEpic(epic2.getId());
-        tm.createSubtask(sub1);
-        tm.createSubtask(sub2);
-        tm.createSubtask(sub3);
+        ftm.createSubtask(sub1);
+        ftm.createSubtask(sub2);
+        ftm.createSubtask(sub3);
 
-        tasksList = tm.getTasks();
+        tasksList = ftm.getAllTasks();
         System.out.println();
-        System.out.println("Список задач: " + tasksList);
-        System.out.println();
-
-        subtaskList = tm.getSubtasks();
-        System.out.println("Список подзадач: " + subtaskList);
-        System.out.println();
-
-        epicList = tm.getEpics();
-        System.out.println("Список эпиков: " + epicList);
+        System.out.println("Список задач1: ");
+        for (Task task : tasksList) {
+            System.out.println(task);
+        }
         System.out.println();
 
         sub3.setStatus(Status.DONE);
-        tm.updateSubtask(sub3);
+        ftm.updateSubtask(sub3);
 
         sub1.setStatus(Status.IN_PROGRESS);
-        tm.updateSubtask(sub1);
+        ftm.updateSubtask(sub1);
 
         task1.setStatus(Status.DONE);
-        tm.updateTask(task1);
+        ftm.updateTask(task1);
 
-        getSubTask = tm.getSubtask(sub3.getId());
+        getSubTask = (Subtask) ftm.getTask(sub3.getId());
         System.out.println(getSubTask);
 
         System.out.println();
-        historyTasks = tm.getHistory();
+        historyTasks = ftm.getHistory();
         System.out.println("История просмотров1:");
         for (Task task : historyTasks) {
             System.out.println(task);
         }
         System.out.println();
 
-        getSubTask = tm.getSubtask(sub1.getId());
+        getSubTask = (Subtask) ftm.getTask(sub1.getId());
         System.out.println(getSubTask);
 
-        getTask = tm.getTask(task1.getId());
+        getTask = ftm.getTask(task1.getId());
         System.out.println(getTask);
 
-        getSubTask = tm.getSubtask(sub3.getId());
+        getSubTask = (Subtask) ftm.getTask(sub3.getId());
         System.out.println(getSubTask);
 
         System.out.println();
-        historyTasks = tm.getHistory();
+        historyTasks = ftm.getHistory();
         System.out.println("История просмотров1.5: ");
         for (Task task11 : historyTasks) {
             System.out.println(task11);
         }
         System.out.println();
 
-        getEpic = tm.getEpic(epic1.getId()); // проверяем состояние эпиков
+        getEpic = (Epic) ftm.getTask(epic1.getId()); // проверяем состояние эпиков
         System.out.println(getEpic);
 
-        getEpic = tm.getEpic(epic2.getId()); // проверяем состояние эпиков
+        getEpic = (Epic) ftm.getTask(epic2.getId()); // проверяем состояние эпиков
         System.out.println(getEpic);
 
-        historyTasks = tm.getHistory();
+        historyTasks = ftm.getHistory();
         System.out.println();
         System.out.println("История просмотров2:");
         for (Task task : historyTasks) {
@@ -105,31 +112,50 @@ public class Main {
         }
         System.out.println();
 
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
-        tm.getTask(task1.getId());
+        ftm.getTask(task1.getId());
+        ftm.getTask(task1.getId());
+        ftm.getTask(task1.getId());
 
-        historyTasks = tm.getHistory();
+        historyTasks = ftm.getHistory();
         System.out.println("История просмотров3:");
         for (Task task : historyTasks) {
             System.out.println(task);
         }
         System.out.println();
 
-        tm.deleteTask(1);
-        tm.deleteEpic(6);
+        ftm.deleteTask(1);
+        ftm.deleteTask(6);
 
-        tasksList = tm.getTasks();
+        tasksList = ftm.getAllTasks();
         System.out.println();
-        System.out.println("Список задач: " + tasksList);
+        System.out.println("Список задач2: ");
+        for (Task task : tasksList) {
+            System.out.println(task);
+        }
         System.out.println();
 
-        subtaskList = tm.getSubtasks();
-        System.out.println("Список подзадач: " + subtaskList);
+        try {
+            fileTestLoad = File.createTempFile("historyTasksTestLoad", ".csv", new File("C:"));
+            Files.copy(file.toPath(), fileTestLoad.toPath(), REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время обработки файла.");
+        }
+        ftm.deleteTasks(); // удалим все задачи для проверки восстановления данных из темп файла
+        tasksList = ftm.getAllTasks();
+
+        System.out.println();
+        System.out.println("Список задач после их удаления: " + tasksList);
         System.out.println();
 
-        epicList = tm.getEpics();
-        System.out.println("Список эпиков: " + epicList);
+        FileBackedTaskManager ftmLoad = FileBackedTaskManager.loadFromFile(fileTestLoad);
+
+        tasksList = ftmLoad.getAllTasks();
         System.out.println();
+        System.out.println("Список задач после восстановления: " );
+        for (Task task : tasksList) {
+            System.out.println(task);
+        }
+        System.out.println();
+
     }
 }

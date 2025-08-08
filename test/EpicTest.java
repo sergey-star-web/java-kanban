@@ -63,7 +63,7 @@ class EpicTest {
         tm.createEpic(epic);
         subtask.setIdEpic(epic.getId());
         tm.createSubtask(subtask);
-        Epic epicInManager = tm.getEpic(epic.getId());
+        Epic epicInManager = (Epic) tm.getTask(epic.getId());
         if (epic.getId() == epicInManager.getId() && epic.getName().equals(epicInManager.getName())
                 && epic.getDescription().equals(epicInManager.getDescription())
                 && epic.getStatus() == epicInManager.getStatus()

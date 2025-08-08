@@ -40,7 +40,7 @@ public class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
 
         tm.createSubtask(subtask);
-        assertNotNull(tm.getSubtask(subtask.getId()), "Метод getSubtask должен вернуть подзадачу");
+        assertNotNull(tm.getTask(subtask.getId()), "Метод getSubtask должен вернуть подзадачу");
     }
 
     @Test
@@ -48,6 +48,6 @@ public class InMemoryTaskManagerTest {
         Epic epic = new Epic("first_epic", "non desc");
 
         tm.createEpic(epic);
-        assertNotNull(tm.getEpic(epic.getId()), "Метод getEpic должен вернуть эпик");
+        assertNotNull(tm.getTask(epic.getId()), "Метод getEpic должен вернуть эпик");
     }
 }

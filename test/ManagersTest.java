@@ -30,9 +30,13 @@ public class ManagersTest {
         tm.createTask(task);
         tm.getTask(task.getId());
         Task taskPrev = tm.getHistory().getFirst();
+        taskPrev = new Task(taskPrev.getName(), taskPrev.getDescription(), taskPrev.getStatus());
+
         task.setDescription("test task update description");
         tm.getTask(task.getId());
         Task taskCurr = tm.getHistory().getFirst();
+        taskCurr = new Task(taskCurr.getName(), taskCurr.getDescription(), taskCurr.getStatus());
+
         assertFalse(taskPrev.getDescription().equals(taskCurr.getDescription()), "Описание тасков не должно быть одинаковым");
     }
 
@@ -42,12 +46,20 @@ public class ManagersTest {
 
         subtask.setIdEpic(1);
         tm.createSubtask(subtask);
-        tm.getSubtask(subtask.getId());
+        tm.getTask(subtask.getId());
+
         Subtask subtaskPrev = (Subtask) tm.getHistory().getFirst();
+        subtaskPrev = new Subtask(subtaskPrev.getName(), subtaskPrev.getDescription(), subtaskPrev.getStatus());
+        subtaskPrev.setIdEpic(subtask.getIdEpic());
+
         subtask.setDescription("test subtask update description");
         subtask.setIdEpic(999);
-        tm.getSubtask(subtask.getId());
+        tm.getTask(subtask.getId());
+
         Subtask subtaskCurr = (Subtask) tm.getHistory().getFirst();
+        subtaskCurr = new Subtask(subtaskCurr.getName(), subtaskCurr.getDescription(), subtaskCurr.getStatus());
+        subtaskCurr.setIdEpic(subtask.getIdEpic());
+
         assertFalse(subtaskPrev.getDescription().equals(subtaskCurr.getDescription()), "Описание сабтасков не должно быть одинаковым");
         assertFalse(subtaskPrev.getIdEpic() == subtaskCurr.getIdEpic(), "Код эпика в сабтасках не должно быть одинаковым");
     }
@@ -60,12 +72,18 @@ public class ManagersTest {
         tm.createEpic(epic);
         subtask.setIdEpic(epic.getId());
         tm.createSubtask(subtask);
-        tm.getEpic(epic.getId());
+        tm.getTask(epic.getId());
         Epic epicPrev = (Epic) tm.getHistory().getFirst();
+        epicPrev = new Epic(epicPrev.getName(), epicPrev.getDescription());
+        epicPrev.setSubtasks(epic.getSubtasks());
+
         epic.setDescription("test subtask update description");
         epic.setSubtasks(null);
-        tm.getEpic(epic.getId());
+        tm.getTask(epic.getId());
         Epic epicCurr = (Epic) tm.getHistory().getFirst();
+        epicCurr = new Epic(epicCurr.getName(), epicCurr.getDescription());
+        epicCurr.setSubtasks(epic.getSubtasks());
+
         assertFalse(epicPrev.getDescription().equals(epicCurr.getDescription()), "Описание эпиков не должно быть одинаковым");
         assertFalse(epicPrev.getSubtasks().equals(epicCurr.getSubtasks()), "Список сабтасков в эпиках не должен быть одинаковым");
     }

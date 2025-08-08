@@ -46,7 +46,7 @@ public class SubtaskTest {
 
         subtask.setIdEpic(1);
         tm.createSubtask(subtask);
-        Subtask subtaskInManager = tm.getSubtask(subtask.getId());
+        Subtask subtaskInManager = (Subtask) tm.getTask(subtask.getId());
         if (subtask.getId() == subtaskInManager.getId() && subtask.getName().equals(subtaskInManager.getName())
                 && subtask.getDescription().equals(subtaskInManager.getDescription())
                 && subtask.getStatus() == subtaskInManager.getStatus() && subtask.getIdEpic() == subtaskInManager.getIdEpic()) {
