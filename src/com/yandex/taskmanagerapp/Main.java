@@ -151,7 +151,7 @@ public class Main {
 
         tasksList = ftmLoad.getAllTasks();
         System.out.println();
-        System.out.println("Список задач после восстановления: " );
+        System.out.println("Список задач после восстановления: ");
         for (Task task : tasksList) {
             System.out.println(task);
         }
