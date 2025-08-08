@@ -1,6 +1,6 @@
 package com.yandex.taskmanagerapp.model;
 
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 
 public class Subtask extends Task {
     private Integer idEpic = 0;

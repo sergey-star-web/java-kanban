@@ -3,7 +3,7 @@ package com.test;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +46,7 @@ public class SubtaskTest {
 
         subtask.setIdEpic(1);
         tm.createSubtask(subtask);
-        Subtask subtaskInManager = tm.getSubtask(subtask.getId());
+        Subtask subtaskInManager = (Subtask) tm.getTask(subtask.getId());
         if (subtask.getId() == subtaskInManager.getId() && subtask.getName().equals(subtaskInManager.getName())
                 && subtask.getDescription().equals(subtaskInManager.getDescription())
                 && subtask.getStatus() == subtaskInManager.getStatus() && subtask.getIdEpic() == subtaskInManager.getIdEpic()) {

@@ -1,6 +1,6 @@
 package com.yandex.taskmanagerapp.model;
 
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import java.util.Objects;
 
 public class Task {

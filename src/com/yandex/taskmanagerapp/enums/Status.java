@@ -1,4 +1,4 @@
-package com.yandex.taskmanagerapp.service;
+package com.yandex.taskmanagerapp.enums;
 
 public enum Status {
     NEW,
