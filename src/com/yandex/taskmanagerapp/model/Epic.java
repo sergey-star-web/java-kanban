@@ -38,6 +38,8 @@ public class Epic extends Task {
         this.subtasks = subtasks;
     }
 
-    public void removeSubtask(Subtask subtask) { this.subtasks.remove(subtask); }
+    public void removeSubtask(Subtask subtask) {
+        this.subtasks.remove(subtask);
+    }
 
 }
