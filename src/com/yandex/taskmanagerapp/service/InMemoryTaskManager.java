@@ -114,7 +114,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
     }
 
-    private boolean checkIdForCorrect (Task task) {
+    private boolean checkIdForCorrect(Task task) {
         if (task.getId() == null || task.getId() < 1 || tasks.containsKey(task.getId())) {
             return true;
         } else {
