@@ -4,11 +4,11 @@ public class Managers {
     private Managers() {
     }
 
-    public static FileBackedTaskManager getDefault() {
+    public static TaskManager getDefault() {
         return new FileBackedTaskManager();
     }
 
-    public static InMemoryTaskManager getTaskManager() {
+    public static TaskManager getMemoryTaskManager() {
         return new InMemoryTaskManager();
     }
 

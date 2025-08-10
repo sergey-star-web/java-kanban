@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest {
-    private final TaskManager tm = Managers.getTaskManager();
+    private final TaskManager tm = Managers.getMemoryTaskManager();
 
     @Test
     void createTasksDifferentTypes() {
@@ -18,9 +18,9 @@ public class InMemoryTaskManagerTest {
         Epic epic = new Epic("first_epic", "non desc");
         boolean tasksDifferentTypes = false;
 
-        tm.createTask(task);
-        tm.createSubtask(subtask);
-        tm.createEpic(epic);
+        tm.addTask(task);
+        tm.addSubtask(subtask);
+        tm.addEpic(epic);
         if (tm.getTasks().contains(task) && tm.getSubtasks().contains(subtask) && tm.getEpics().contains(epic)) {
             tasksDifferentTypes = true;
         }
@@ -31,7 +31,7 @@ public class InMemoryTaskManagerTest {
     void checkFindGetTaskId() {
         Task task = new Task("first_task", "non desc", Status.NEW);
 
-        tm.createTask(task);
+        tm.addTask(task);
         assertNotNull(tm.getTask(task.getId()), "Метод getTask должен вернуть задачу");
     }
 
@@ -39,7 +39,7 @@ public class InMemoryTaskManagerTest {
     void checkFindGetSubtaskId() {
         Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
 
-        tm.createSubtask(subtask);
+        tm.addSubtask(subtask);
         assertNotNull(tm.getTask(subtask.getId()), "Метод getSubtask должен вернуть подзадачу");
     }
 
@@ -47,7 +47,7 @@ public class InMemoryTaskManagerTest {
     void checkFindGetEpicId() {
         Epic epic = new Epic("first_epic", "non desc");
 
-        tm.createEpic(epic);
+        tm.addEpic(epic);
         assertNotNull(tm.getTask(epic.getId()), "Метод getEpic должен вернуть эпик");
     }
 }

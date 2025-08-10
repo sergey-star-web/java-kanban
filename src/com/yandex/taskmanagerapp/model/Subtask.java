@@ -1,6 +1,7 @@
 package com.yandex.taskmanagerapp.model;
 
 import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.enums.TypeTask;
 
 public class Subtask extends Task {
     private Integer idEpic = 0;
@@ -21,6 +22,11 @@ public class Subtask extends Task {
         this(originalSubtask.getName(), originalSubtask.getDescription(), originalSubtask.getStatus());
         this.setId(originalSubtask.getId());
         this.idEpic = originalSubtask.getIdEpic();
+    }
+
+    @Override
+    public TypeTask getType() {
+        return TypeTask.SUBTASK;
     }
 
     @Override

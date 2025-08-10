@@ -32,6 +32,10 @@ public class Task {
         this.id = originalTask.getId();
     }
 
+    public TypeTask getType() {
+        return TypeTask.TASK;
+    }
+
     public String getName() {
         return name;
     }
@@ -74,16 +78,6 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(name, description, id, status);
-    }
-
-    public TypeTask getType() {
-        if (this instanceof Subtask) {
-            return TypeTask.SUBTASK;
-        } else if (this instanceof Epic) {
-            return TypeTask.EPIC;
-        } else {
-            return TypeTask.TASK;
-        }
     }
 
     @Override

@@ -114,19 +114,41 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
     }
 
+    private boolean checkIdForCorrect (Task task) {
+        if (task.getId() == null || task.getId() < 1 || tasks.containsKey(task.getId())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
-    public void createTask(Task task) {
-        this.counterId++;
-        task.setId(this.counterId);
+    public void addTask(Task task) {
+        if (checkIdForCorrect(task)) {
+            this.counterId++;
+            task.setId(this.counterId);
+        } else {
+            this.counterId = task.getId() + 1;
+        }
         tasks.put(task.getId(), task);
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
-        Epic epic = (Epic) tasks.get(subtask.getIdEpic());
+    public void addSubtask(Subtask subtask) {
+        Epic epic = null;
+        if (tasks.get(subtask.getIdEpic()) != null) {
+            Task task = tasks.get(subtask.getIdEpic());
+            if (task.getType() == TypeTask.EPIC) {
+                epic = (Epic) task;
+            }
+        }
 
-        this.counterId++;
-        subtask.setId(this.counterId);
+        if (checkIdForCorrect(subtask)) {
+            this.counterId++;
+            subtask.setId(this.counterId);
+        } else {
+            this.counterId = subtask.getId() + 1;
+        }
         tasks.put(subtask.getId(), subtask);
         if (epic != null) {
             ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
@@ -136,9 +158,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        this.counterId++;
-        epic.setId(this.counterId);
+    public void addEpic(Epic epic) {
+        if (checkIdForCorrect(epic)) {
+            this.counterId++;
+            epic.setId(this.counterId);
+        } else {
+            this.counterId = epic.getId() + 1;
+        }
         tasks.put(epic.getId(), epic);
     }
 

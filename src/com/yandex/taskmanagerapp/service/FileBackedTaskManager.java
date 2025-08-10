@@ -7,7 +7,6 @@ import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Task;
 
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -30,7 +29,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public Task fromString(String value) {
+    private Task fromString(String value) {
         String[] taskElems = value.split(",");
 
         if (taskElems.length > 0) {
@@ -76,24 +75,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void addTaskFromFile(Task task) {
+    private void addTaskFromFile(Task task) {
         if (task == null) {
             return;
         }
         if (task.getType() == TypeTask.SUBTASK) {
-            Subtask subtask = (Subtask) task;
-            int epicId = subtask.getIdEpic();
-            if (!tasks.containsKey(epicId)) {
-                System.out.println("Эпика с ID=" + epicId + " не существует");
-                return;
-            }
-            Task epic = tasks.get(epicId);
-            ((Epic) epic).addSubtask(subtask);
+            super.addSubtask((Subtask) task);
+        } else if (task.getType() == TypeTask.EPIC) {
+            super.addEpic((Epic) task);
+        } else if (task.getType() == TypeTask.TASK) {
+            super.addTask(task);
         }
-        tasks.put(task.getId(), task);
     }
 
-    public void load(File file) {
+    private void load(File file) {
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
             List<String> tasksFromFile = reader.lines().toList();
             for (String taskFromFile : tasksFromFile) {
@@ -126,20 +121,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createTask(Task task) {
-        super.createTask(task);
+    public void addTask(Task task) {
+        super.addTask(task);
         save();
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
-        super.createSubtask(subtask);
+    public void addSubtask(Subtask subtask) {
+        super.addSubtask(subtask);
         save();
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        super.createEpic(epic);
+    public void addEpic(Epic epic) {
+        super.addEpic(epic);
         save();
     }
 

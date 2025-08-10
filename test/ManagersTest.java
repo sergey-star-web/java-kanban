@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ManagersTest {
-    private final TaskManager tm = Managers.getTaskManager();
+    private final TaskManager tm = Managers.getMemoryTaskManager();
 
     @Test
     void returnInstanceInMemoryTaskManager() {
@@ -27,7 +27,7 @@ public class ManagersTest {
     void checkTasksVersionsWhenAddingHistoryManager() {
         Task task = new Task("first_task", "non desc", Status.NEW);
 
-        tm.createTask(task);
+        tm.addTask(task);
         tm.getTask(task.getId());
         Task taskPrev = tm.getHistory().getFirst();
         taskPrev = new Task(taskPrev.getName(), taskPrev.getDescription(), taskPrev.getStatus());
@@ -45,7 +45,7 @@ public class ManagersTest {
         Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW );
 
         subtask.setIdEpic(1);
-        tm.createSubtask(subtask);
+        tm.addSubtask(subtask);
         tm.getTask(subtask.getId());
 
         Subtask subtaskPrev = (Subtask) tm.getHistory().getFirst();
@@ -69,9 +69,9 @@ public class ManagersTest {
         Epic epic = new Epic("first_epic", "non desc");
         Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
 
-        tm.createEpic(epic);
+        tm.addEpic(epic);
         subtask.setIdEpic(epic.getId());
-        tm.createSubtask(subtask);
+        tm.addSubtask(subtask);
         tm.getTask(epic.getId());
         Epic epicPrev = (Epic) tm.getHistory().getFirst();
         epicPrev = new Epic(epicPrev.getName(), epicPrev.getDescription());

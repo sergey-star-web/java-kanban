@@ -7,6 +7,7 @@ import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.service.FileBackedTaskManager;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.service.Managers;
+import com.yandex.taskmanagerapp.service.TaskManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Main {
     public static void main(String[] args) {
-        FileBackedTaskManager ftm = Managers.getDefault();
+        FileBackedTaskManager ftm = (FileBackedTaskManager) Managers.getDefault();
         List<Task> tasksList;
         List<Task> historyTasks;
         Task getTask;
@@ -42,16 +43,16 @@ public class Main {
             throw new ManagerSaveException("Произошла ошибка во время обработки файла.");
         }
 
-        ftm.createTask(task1);
-        ftm.createTask(task2);
-        ftm.createEpic(epic1);
-        ftm.createEpic(epic2);
+        ftm.addTask(task1);
+        ftm.addTask(task2);
+        ftm.addEpic(epic1);
+        ftm.addEpic(epic2);
         sub1.setIdEpic(epic1.getId());
         sub2.setIdEpic(epic1.getId());
         sub3.setIdEpic(epic2.getId());
-        ftm.createSubtask(sub1);
-        ftm.createSubtask(sub2);
-        ftm.createSubtask(sub3);
+        ftm.addSubtask(sub1);
+        ftm.addSubtask(sub2);
+        ftm.addSubtask(sub3);
 
         tasksList = ftm.getAllTasks();
         System.out.println();

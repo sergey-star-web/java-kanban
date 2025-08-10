@@ -2,6 +2,7 @@ package com.yandex.taskmanagerapp.model;
 
 import java.util.ArrayList;
 import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.enums.TypeTask;
 
 public class Epic extends Task {
     private ArrayList<Subtask> subtasks = new ArrayList<>();
@@ -21,6 +22,11 @@ public class Epic extends Task {
         this(originalEpic.getName(), originalEpic.getDescription());
         this.setId(originalEpic.getId());
         this.subtasks = originalEpic.getSubtasks();
+    }
+
+    @Override
+    public TypeTask getType() {
+        return TypeTask.EPIC;
     }
 
     @Override
