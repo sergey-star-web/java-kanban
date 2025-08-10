@@ -9,6 +9,11 @@ public class Subtask extends Task {
         super(name, description, status);
     }
 
+    public Subtask(Integer id, String name, String description, Status status, Integer idEpic) {
+        super(id, name, description, status);
+        this.idEpic = idEpic;
+    }
+
     public Subtask() {
     }
 
@@ -20,13 +25,12 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                "name='" + this.getName() + '\'' +
-                ", description='" + this.getDescription() + '\'' +
-                ", id=" + this.getId() +
-                ", status=" + this.getStatus() +
-                ", idEpic=" + this.idEpic +
-                '}';
+        return getId() +
+                "," + getType() +
+                "," + getName() +
+                "," + getStatus() +
+                "," + getDescription() +
+                "," + getIdEpic();
     }
 
     public Integer getIdEpic() {

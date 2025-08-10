@@ -1,6 +1,8 @@
 package com.yandex.taskmanagerapp.model;
 
 import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.enums.TypeTask;
+
 import java.util.Objects;
 
 public class Task {
@@ -10,6 +12,13 @@ public class Task {
     private Status status;
 
     public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Task(Integer id, String name, String description, Status status) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
@@ -67,13 +76,23 @@ public class Task {
         return Objects.hash(name, description, id, status);
     }
 
+    public TypeTask getType() {
+        if (this instanceof Subtask) {
+            return TypeTask.SUBTASK;
+        } else if (this instanceof Epic) {
+            return TypeTask.EPIC;
+        } else {
+            return TypeTask.TASK;
+        }
+    }
+
     @Override
     public String toString() {
-        return "Task{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", id=" + id +
-                ", status=" + status +
-                '}';
+        return getId() +
+                "," + getType() +
+                "," + getName() +
+                "," + getStatus() +
+                "," + getDescription();
     }
+
 }

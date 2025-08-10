@@ -1,6 +1,7 @@
 package com.yandex.taskmanagerapp.service;
 
 import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.enums.TypeTask;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer counterId = 0;
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public InMemoryTaskManager() {
@@ -213,4 +214,20 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    @Override
+    public void updateSubtasksInEpic(Epic epic) {
+        if (epic != null) {
+            ArrayList<Subtask> subtasksInEpic = null;
+            for (Task task : tasks.values()) {
+                if (task.getType() == TypeTask.SUBTASK) {
+                    if (((Subtask) task).getIdEpic() == epic.getId()) {
+                        subtasksInEpic.add((Subtask) task);
+                    }
+                }
+            }
+            if (subtasksInEpic != null && !subtasksInEpic.isEmpty()) {
+                epic.setSubtasks(subtasksInEpic);
+            }
+        }
+    }
 }

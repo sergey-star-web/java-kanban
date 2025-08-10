@@ -6,9 +6,11 @@ import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.service.FileBackedTaskManager;
 import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.service.Managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -16,12 +18,14 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Main {
     public static void main(String[] args) {
-        //TaskManager tm = Managers.getDefault();
+        FileBackedTaskManager ftm = Managers.getDefault();
         List<Task> tasksList;
         List<Task> historyTasks;
         Task getTask;
         Subtask getSubTask;
         Epic getEpic;
+        File file;
+        File fileTestLoad;
 
         Task task1 = new Task("first_task", "non desc", Status.NEW);
         Task task2 = new Task("second_task", "non desc", Status.NEW);
@@ -30,10 +34,6 @@ public class Main {
         Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW);
         Epic epic2 = new Epic("second_epic", "non desc");
         Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW);
-
-        FileBackedTaskManager ftm;
-        File file;
-        File fileTestLoad;
 
         try {
             file = File.createTempFile("historyTasks", ".csv", new File("C:"));
@@ -133,6 +133,18 @@ public class Main {
             System.out.println(task);
         }
         System.out.println();
+
+        try {
+            List<String> tasksFromFile = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+            System.out.println();
+            System.out.println("Проверка строк в файле: ");
+            for (String task : tasksFromFile) {
+                System.out.println(task);
+            }
+            System.out.println();
+        } catch (IOException e) {
+            throw new ManagerSaveException("Произошла ошибка во время обработки файла.");
+        }
 
         try {
             fileTestLoad = File.createTempFile("historyTasksTestLoad", ".csv", new File("C:"));

@@ -37,4 +37,7 @@ public interface TaskManager {
     void updateEpic(Epic epic);
 
     List<Task> getAllTasks();
+
+    void updateSubtasksInEpic(Epic epic);
+
 }
