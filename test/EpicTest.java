@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
-    private final TaskManager tm = Managers.getDefault();
+    private final TaskManager tm = Managers.getTaskManager();
 
     @Test
     void epicCannotContainItselfInSubtasks() {

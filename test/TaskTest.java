@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskTest {
-    private final TaskManager tm = Managers.getDefault();
+    private final TaskManager tm = Managers.getTaskManager();
 
     @Test
     void equalsToEachOtherIfEqualsId() {
