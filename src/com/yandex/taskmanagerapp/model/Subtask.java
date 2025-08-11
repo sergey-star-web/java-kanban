@@ -1,12 +1,18 @@
 package com.yandex.taskmanagerapp.model;
 
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
+import com.yandex.taskmanagerapp.enums.TypeTask;
 
 public class Subtask extends Task {
     private Integer idEpic = 0;
 
     public Subtask(String name, String description, Status status) {
         super(name, description, status);
+    }
+
+    public Subtask(Integer id, String name, String description, Status status, Integer idEpic) {
+        super(id, name, description, status);
+        this.idEpic = idEpic;
     }
 
     public Subtask() {
@@ -19,14 +25,18 @@ public class Subtask extends Task {
     }
 
     @Override
+    public TypeTask getType() {
+        return TypeTask.SUBTASK;
+    }
+
+    @Override
     public String toString() {
-        return "Subtask{" +
-                "name='" + this.getName() + '\'' +
-                ", description='" + this.getDescription() + '\'' +
-                ", id=" + this.getId() +
-                ", status=" + this.getStatus() +
-                ", idEpic=" + this.idEpic +
-                '}';
+        return getId() +
+                "," + getType() +
+                "," + getName() +
+                "," + getStatus() +
+                "," + getDescription() +
+                "," + getIdEpic();
     }
 
     public Integer getIdEpic() {

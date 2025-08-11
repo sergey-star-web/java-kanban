@@ -3,21 +3,21 @@ package com.test;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskTest {
-    private final TaskManager tm = Managers.getDefault();
+    private final TaskManager tm = Managers.getMemoryTaskManager();
 
     @Test
     void equalsToEachOtherIfEqualsId() {
         Task task1 = new Task("first_task", "non desc", Status.NEW);
         Task task2 = new Task("second_task", "non desc", Status.NEW);
 
-        tm.createTask(task1);
-        tm.createTask(task2);
+        tm.addTask(task1);
+        tm.addTask(task2);
         task2.setId(1);
         assertEquals(task1, task2, "Таски должны быть равны друг другу так как у них одинаковый id");
     }
@@ -27,7 +27,7 @@ public class TaskTest {
         Task taskAuto = new Task("first_task", "non desc", Status.NEW);
         Task taskManual = new Task("second_task", "non desc", Status.NEW);
 
-        tm.createTask(taskManual);
+        tm.addTask(taskManual);
         taskManual.setId(10);
         assertNotEquals(taskManual.getId(), taskAuto.getId(), "Сгенерированный id не должен совпадать с ручным");
     }
@@ -37,7 +37,7 @@ public class TaskTest {
         Task taskInit = new Task("first_task", "non desc", Status.NEW);
         boolean allFieldsTasksEquals = false;
 
-        tm.createTask(taskInit);
+        tm.addTask(taskInit);
         Task taskInManager = tm.getTask(taskInit.getId());
         if (taskInit.getId() == taskInManager.getId() && taskInit.getName().equals(taskInManager.getName())
                 && taskInit.getDescription().equals(taskInManager.getDescription())

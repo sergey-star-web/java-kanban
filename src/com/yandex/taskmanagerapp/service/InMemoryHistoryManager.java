@@ -79,4 +79,5 @@ public class InMemoryHistoryManager implements HistoryManager {
     public int size() {
         return placeInspectionTask.size();
     }
+
 }

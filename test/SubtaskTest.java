@@ -3,13 +3,13 @@ package com.test;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SubtaskTest {
-    private final TaskManager tm = Managers.getDefault();
+    private final TaskManager tm = Managers.getMemoryTaskManager();
 
     @Test
     void subtaskCannotBeItsOwnEpic() {
@@ -23,7 +23,7 @@ public class SubtaskTest {
         Subtask subAuto = new Subtask("first_sub", "non desc", Status.NEW );
         Subtask subManual = new Subtask("second_sub", "non desc", Status.NEW );
 
-        tm.createSubtask(subManual);
+        tm.addSubtask(subManual);
         subManual.setId(10);
         assertNotEquals(subManual.getId(), subAuto.getId(), "Сгенерированный id не должен совпадать с ручным");
     }
@@ -33,8 +33,8 @@ public class SubtaskTest {
         Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW );
         Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW );
 
-        tm.createSubtask(subtask1);
-        tm.createSubtask(subtask2);
+        tm.addSubtask(subtask1);
+        tm.addSubtask(subtask2);
         subtask2.setId(1);
         assertEquals(subtask1, subtask2, "Сабтаски должны быть равны друг другу так как у них одинаковый id");
     }
@@ -45,8 +45,8 @@ public class SubtaskTest {
         boolean allFieldsSubtasksEquals = false;
 
         subtask.setIdEpic(1);
-        tm.createSubtask(subtask);
-        Subtask subtaskInManager = tm.getSubtask(subtask.getId());
+        tm.addSubtask(subtask);
+        Subtask subtaskInManager = (Subtask) tm.getTask(subtask.getId());
         if (subtask.getId() == subtaskInManager.getId() && subtask.getName().equals(subtaskInManager.getName())
                 && subtask.getDescription().equals(subtaskInManager.getDescription())
                 && subtask.getStatus() == subtaskInManager.getStatus() && subtask.getIdEpic() == subtaskInManager.getIdEpic()) {

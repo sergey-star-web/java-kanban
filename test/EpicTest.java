@@ -2,7 +2,7 @@ import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
-import com.yandex.taskmanagerapp.service.Status;
+import com.yandex.taskmanagerapp.enums.Status;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
-    private final TaskManager tm = Managers.getDefault();
+    private final TaskManager tm = Managers.getMemoryTaskManager();
 
     @Test
     void epicCannotContainItselfInSubtasks() {
         Epic epic = new Epic("Epic", "non description");
-        tm.createEpic(epic);
+        tm.addEpic(epic);
         Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW );
         Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW );
         ArrayList<Subtask> subtasks = new ArrayList<>();
@@ -23,8 +23,8 @@ class EpicTest {
         subtask2.setId(epic.getId());
         subtask1.setIdEpic(epic.getId());
         subtask2.setIdEpic(epic.getId());
-        tm.createSubtask(subtask1);
-        tm.createSubtask(subtask2);
+        tm.addSubtask(subtask1);
+        tm.addSubtask(subtask2);
         subtasks.add(subtask1);
         subtasks.add(subtask2);
         epic.setSubtasks(subtasks);
@@ -38,8 +38,8 @@ class EpicTest {
         Epic epic1 = new Epic("first_epic", "non desc");
         Epic epic2 = new Epic("second_epic", "non desc");
 
-        tm.createEpic(epic1);
-        tm.createEpic(epic2);
+        tm.addEpic(epic1);
+        tm.addEpic(epic2);
         epic2.setId(1);
         assertEquals(epic1, epic2, "Эпики должны быть равны друг другу так как у них одинаковый id");
     }
@@ -49,7 +49,7 @@ class EpicTest {
         Epic epicAuto = new Epic("first_epic", "non desc");
         Epic epicManual = new Epic("second_epic", "non desc");
 
-        tm.createEpic(epicManual);
+        tm.addEpic(epicManual);
         epicManual.setId(10);
         assertNotEquals(epicManual.getId(), epicAuto.getId(), "Сгенерированный id не должен совпадать с ручным");
     }
@@ -60,10 +60,10 @@ class EpicTest {
         Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
         boolean allFieldsEpicsEquals = false;
 
-        tm.createEpic(epic);
+        tm.addEpic(epic);
         subtask.setIdEpic(epic.getId());
-        tm.createSubtask(subtask);
-        Epic epicInManager = tm.getEpic(epic.getId());
+        tm.addSubtask(subtask);
+        Epic epicInManager = (Epic) tm.getTask(epic.getId());
         if (epic.getId() == epicInManager.getId() && epic.getName().equals(epicInManager.getName())
                 && epic.getDescription().equals(epicInManager.getDescription())
                 && epic.getStatus() == epicInManager.getStatus()
