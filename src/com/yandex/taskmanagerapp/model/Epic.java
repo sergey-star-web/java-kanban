@@ -1,11 +1,13 @@
 package com.yandex.taskmanagerapp.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
 public class Epic extends Task {
     private ArrayList<Subtask> subtasks = new ArrayList<>();
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
@@ -35,7 +37,10 @@ public class Epic extends Task {
                 "," + getType() +
                 "," + getName() +
                 "," + getStatus() +
-                "," + getDescription();
+                "," + getDescription() +
+                "," + getDurationMin() +
+                "," + getStartTime() +
+                "," + getEndTime();
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -54,4 +59,11 @@ public class Epic extends Task {
         this.subtasks.add(subtask);
     }
 
+    public LocalDateTime getEndTime() {
+        return this.endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 }

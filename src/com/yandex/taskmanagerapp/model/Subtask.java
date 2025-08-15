@@ -3,11 +3,14 @@ package com.yandex.taskmanagerapp.model;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Subtask extends Task {
     private Integer idEpic = 0;
 
-    public Subtask(String name, String description, Status status) {
-        super(name, description, status);
+    public Subtask(String name, String description, Status status, Integer duration, String startTime) {
+        super(name, description, status, duration, startTime);
     }
 
     public Subtask(Integer id, String name, String description, Status status, Integer idEpic) {
@@ -15,11 +18,19 @@ public class Subtask extends Task {
         this.idEpic = idEpic;
     }
 
+    public Subtask(Integer id, String name, String description, Status status, Integer idEpic, String startTime,
+                   Integer duration) {
+        super(id, name, description, status, duration, startTime);
+        this.idEpic = idEpic;
+    }
+
     public Subtask() {
     }
 
     public Subtask(Subtask originalSubtask) {
-        this(originalSubtask.getName(), originalSubtask.getDescription(), originalSubtask.getStatus());
+        this(originalSubtask.getName(), originalSubtask.getDescription(), originalSubtask.getStatus(),
+                Integer.parseInt(String.valueOf(originalSubtask.getDuration().toMinutes())),
+                originalSubtask.getStartTime().toString());
         this.setId(originalSubtask.getId());
         this.idEpic = originalSubtask.getIdEpic();
     }
@@ -36,6 +47,8 @@ public class Subtask extends Task {
                 "," + getName() +
                 "," + getStatus() +
                 "," + getDescription() +
+                "," + getDurationMin() +
+                "," + getStartTime() +
                 "," + getIdEpic();
     }
 

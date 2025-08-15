@@ -13,8 +13,8 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void createTasksDifferentTypes() {
-        Task task = new Task("first_task", "non desc", Status.NEW);
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
+        Task task = new Task("first_task", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 50, "2025-08-01 15:00:00");
         Epic epic = new Epic("first_epic", "non desc");
         boolean tasksDifferentTypes = false;
 
@@ -29,7 +29,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void checkFindGetTaskId() {
-        Task task = new Task("first_task", "non desc", Status.NEW);
+        Task task = new Task("first_task", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
 
         tm.addTask(task);
         assertNotNull(tm.getTask(task.getId()), "Метод getTask должен вернуть задачу");
@@ -37,7 +37,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     void checkFindGetSubtaskId() {
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
 
         tm.addSubtask(subtask);
         assertNotNull(tm.getTask(subtask.getId()), "Метод getSubtask должен вернуть подзадачу");

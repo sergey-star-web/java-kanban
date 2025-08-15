@@ -27,13 +27,15 @@ public class Main {
         File file;
         File fileTestLoad;
 
-        Task task1 = new Task("first_task", "non desc", Status.NEW);
-        Task task2 = new Task("second_task", "non desc", Status.NEW);
+        Task task1 = new Task("first_task", "non desc", Status.NEW, 35, "2025-08-01 10:15:30");
+        Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 14:00:00");
         Epic epic1 = new Epic("first_epic", "non desc");
-        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW);
-        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW);
+        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW, 60, "2025-08-02 10:30:00");
+        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW, 40, "2025-08-03 10:40:00");
         Epic epic2 = new Epic("second_epic", "non desc");
-        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW);
+        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW, 50, "2025-08-03 15:35:00");
+        Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, "2025-08-04 10:00:00");
+        Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-04 12:00:00");
 
         try {
             file = File.createTempFile("historyTasks", ".csv", new File("C:"));
@@ -49,9 +51,13 @@ public class Main {
         sub1.setIdEpic(epic1.getId());
         sub2.setIdEpic(epic1.getId());
         sub3.setIdEpic(epic2.getId());
+        sub4.setIdEpic(epic1.getId());
+        sub5.setIdEpic(epic2.getId());
         ftm.addSubtask(sub1);
         ftm.addSubtask(sub2);
         ftm.addSubtask(sub3);
+        ftm.addSubtask(sub4);
+        ftm.addSubtask(sub5);
 
         tasksList = ftm.getAllTasks();
         System.out.println();

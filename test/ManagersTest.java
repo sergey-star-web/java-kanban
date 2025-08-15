@@ -25,7 +25,7 @@ public class ManagersTest {
 
     @Test
     void checkTasksVersionsWhenAddingHistoryManager() {
-        Task task = new Task("first_task", "non desc", Status.NEW);
+        Task task = new Task("first_task", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
 
         tm.addTask(task);
         tm.getTask(task.getId());
@@ -42,14 +42,16 @@ public class ManagersTest {
 
     @Test
     void checkSubtasksVersionsWhenAddingHistoryManager() {
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW );
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
 
         subtask.setIdEpic(1);
         tm.addSubtask(subtask);
         tm.getTask(subtask.getId());
 
         Subtask subtaskPrev = (Subtask) tm.getHistory().getFirst();
-        subtaskPrev = new Subtask(subtaskPrev.getName(), subtaskPrev.getDescription(), subtaskPrev.getStatus());
+        subtaskPrev = new Subtask(subtaskPrev.getName(), subtaskPrev.getDescription(), subtaskPrev.getStatus(),
+                Integer.parseInt(String.valueOf(subtaskPrev.getDuration().toMinutes())),
+                subtaskPrev.getStartTime().toString());
         subtaskPrev.setIdEpic(subtask.getIdEpic());
 
         subtask.setDescription("test subtask update description");
@@ -57,7 +59,9 @@ public class ManagersTest {
         tm.getTask(subtask.getId());
 
         Subtask subtaskCurr = (Subtask) tm.getHistory().getFirst();
-        subtaskCurr = new Subtask(subtaskCurr.getName(), subtaskCurr.getDescription(), subtaskCurr.getStatus());
+        subtaskCurr = new Subtask(subtaskCurr.getName(), subtaskCurr.getDescription(), subtaskCurr.getStatus(),
+                Integer.parseInt(String.valueOf(subtaskCurr.getDuration().toMinutes())),
+                subtaskCurr.getStartTime().toString());
         subtaskCurr.setIdEpic(subtask.getIdEpic());
 
         assertFalse(subtaskPrev.getDescription().equals(subtaskCurr.getDescription()), "Описание сабтасков не должно быть одинаковым");
@@ -67,7 +71,7 @@ public class ManagersTest {
     @Test
     void checkEpicsVersionsWhenAddingHistoryManager() {
         Epic epic = new Epic("first_epic", "non desc");
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
 
         tm.addEpic(epic);
         subtask.setIdEpic(epic.getId());

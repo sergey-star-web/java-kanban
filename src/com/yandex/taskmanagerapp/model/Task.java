@@ -3,18 +3,36 @@ package com.yandex.taskmanagerapp.model;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
+import java.text.Format;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
+    private Integer id;
     private String name;
     private String description;
-    private Integer id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
+    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public Task(String name, String description, Status status) {
+    public Task(String name, String description, Status status, Integer duration, String startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
+        setDurationInt(duration);
+        setStartTimeString(startTime);
+    }
+
+    public Task(Integer id, String name, String description, Status status, Integer duration, String startTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        setDurationInt(duration);
+        setStartTimeString(startTime);
     }
 
     public Task(Integer id, String name, String description, Status status) {
@@ -24,11 +42,19 @@ public class Task {
         this.status = status;
     }
 
+    public Task(String name, String description, Status status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     public Task() {
     }
 
     public Task(Task originalTask) {
-        this(originalTask.getName(), originalTask.getDescription(), originalTask.getStatus());
+        this(originalTask.getName(), originalTask.getDescription(), originalTask.getStatus(),
+                Integer.parseInt(String.valueOf(originalTask.getDuration().toMinutes())),
+                originalTask.getStartTime().toString());
         this.id = originalTask.getId();
     }
 
@@ -86,7 +112,48 @@ public class Task {
                 "," + getType() +
                 "," + getName() +
                 "," + getStatus() +
-                "," + getDescription();
+                "," + getDescription() +
+                "," + getDurationMin() +
+                "," + getStartTime();
     }
 
+    public LocalDateTime getEndTime() {
+        return this.startTime.plusMinutes(this.duration.toMinutes());
+    }
+
+    public LocalDateTime getStartTime() {
+        return this.startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setStartTimeString(String startTime) {
+        this.startTime = LocalDateTime.parse(startTime, format);
+    }
+
+    public Duration getDuration() {
+        return this.duration;
+    }
+
+    public Integer getDurationMin() {
+        if (this.duration == null) {
+            return 0;
+        } else {
+            return (int) this.duration.toMinutes();
+        }
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public void setDurationInt(Integer duration) {
+        this.duration = Duration.ofMinutes(duration);
+    }
+
+    public DateTimeFormatter getFormat() {
+        return this.format;
+    }
 }

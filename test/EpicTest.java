@@ -16,8 +16,8 @@ class EpicTest {
     void epicCannotContainItselfInSubtasks() {
         Epic epic = new Epic("Epic", "non description");
         tm.addEpic(epic);
-        Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW );
-        Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW );
+        Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
+        Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW, 50, "2025-08-01 14:00:00");
         ArrayList<Subtask> subtasks = new ArrayList<>();
 
         subtask2.setId(epic.getId());
@@ -57,7 +57,7 @@ class EpicTest {
     @Test
     void checkImmutabilityAllFieldsEpics() {
         Epic epic = new Epic("first_epic", "non desc");
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
         boolean allFieldsEpicsEquals = false;
 
         tm.addEpic(epic);
