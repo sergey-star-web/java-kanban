@@ -9,7 +9,6 @@ import com.yandex.taskmanagerapp.model.Epic;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer counterId = 0;
@@ -134,6 +133,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             this.counterId = task.getId() + 1;
         }
+        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(task));
         tasks.put(task.getId(), task);
     }
 
@@ -153,6 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             this.counterId = subtask.getId() + 1;
         }
+        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(subtask));
         tasks.put(subtask.getId(), subtask);
         if (epic != null) {
             ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
@@ -169,6 +170,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             this.counterId = epic.getId() + 1;
         }
+        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(epic));
         tasks.put(epic.getId(), epic);
     }
 
@@ -187,11 +189,13 @@ public class InMemoryTaskManager implements TaskManager {
                 if (epic.getSubtasks() != null) {
                     subtasksInEpic = epic.getSubtasks();
                     startTime = subtasksInEpic.stream()
-                            .min(Comparator.comparing(Subtask::getStartTime))
+                            .filter(t -> t.getStartTime() != null)
+                            .min(Comparator.comparing(t -> t.getStartTime()))
                             .get()
                             .getStartTime();
                     endTime = subtasksInEpic.stream()
-                            .max(Comparator.comparing(Subtask::getEndTime))
+                            .filter(t -> t.getEndTime() != null)
+                            .max(Comparator.comparing(t -> t.getEndTime()))
                             .get()
                             .getEndTime();
                     duration = Duration.ofMinutes(subtasksInEpic.stream()
@@ -291,5 +295,34 @@ public class InMemoryTaskManager implements TaskManager {
                 .filter(t -> t.getStartTime() != null && t.getType() != TypeTask.EPIC)
                 .toList());
         return prioritizedTasks;
+    }
+
+    public boolean problemIntersectionSearch(Task task) {
+        if (task.getType() == TypeTask.EPIC || getPrioritizedTasks().isEmpty()) {
+            return false;
+        } else {
+            LocalDateTime endTime;
+            LocalDateTime startTime;
+            if (task.getEndTime() != null && task.getStartTime() != null){
+                endTime = task.getEndTime();
+                startTime = task.getStartTime();
+                Task existTask;
+                TreeSet<Task> prioritizedTasks = getPrioritizedTasks();
+                existTask = prioritizedTasks.stream()
+                        .filter(t -> t.getStartTime() != null && t.getEndTime() != null
+                                && (
+                                        startTime.isBefore(t.getEndTime()) || t.getEndTime().equals(startTime)
+                                            &&
+                                        endTime.isAfter(t.getStartTime()) || t.getStartTime().equals(endTime)
+                                )
+                        )
+                        .findFirst().orElse(null);
+                if (existTask != null) {
+                    System.out.println("Вот например: " + existTask);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

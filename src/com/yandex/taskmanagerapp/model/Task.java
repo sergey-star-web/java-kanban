@@ -7,6 +7,7 @@ import com.yandex.taskmanagerapp.enums.TypeTask;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Task {
     private Integer id;
@@ -20,7 +21,11 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        setDurationInt(duration);
+        if (duration == null) {
+            this.duration = Duration.ZERO;
+        } else {
+            setDurationInt(duration);
+        }
         setStartTimeString(startTime);
     }
 
@@ -29,7 +34,11 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        setDurationInt(duration);
+        if (duration == null) {
+            this.duration = Duration.ZERO;
+        } else {
+            setDurationInt(duration);
+        }
         setStartTimeString(startTime);
     }
 
@@ -39,8 +48,12 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
-        this.duration = duration;
-        this.startTime =  startTime;
+        if (duration == null) {
+            this.duration = Duration.ZERO;
+        } else {
+            this.duration = duration;
+        }
+        this.startTime = startTime;
     }
 
     public Task(Integer id, String name, String description, Status status) {
@@ -126,11 +139,15 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return this.startTime.plusMinutes(this.duration.toMinutes());
+        if (this.startTime != null) {
+            return this.startTime.plusMinutes(this.duration.toMinutes());
+        }
+        return null;
     }
 
     public LocalDateTime getStartTime() {
-        return this.startTime;
+        Optional<LocalDateTime> startTimeOPtional = Optional.ofNullable(this.startTime);
+        return startTimeOPtional.orElse(null);
     }
 
     public void setStartTime(LocalDateTime startTime) {
@@ -138,7 +155,11 @@ public class Task {
     }
 
     public void setStartTimeString(String startTime) {
-        this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
+        if (startTime != null) {
+            this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
+        } else {
+            this.startTime = null;
+        }
     }
 
     public Duration getDuration() {

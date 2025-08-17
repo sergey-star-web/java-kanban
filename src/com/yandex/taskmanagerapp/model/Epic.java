@@ -2,6 +2,8 @@ package com.yandex.taskmanagerapp.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
@@ -60,7 +62,8 @@ public class Epic extends Task {
     }
 
     public LocalDateTime getEndTime() {
-        return this.endTime;
+        Optional<LocalDateTime> endTimeOPtional = Optional.ofNullable(this.endTime);
+        return endTimeOPtional.orElse(null);
     }
 
     public void setEndTime(LocalDateTime endTime) {

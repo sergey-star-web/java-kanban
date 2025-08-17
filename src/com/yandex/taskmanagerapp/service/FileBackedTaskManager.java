@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -50,7 +51,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             if (typeTask == TypeTask.SUBTASK || typeTask == TypeTask.TASK) {
                 duration = Duration.ofMinutes(Integer.parseInt(taskElems[5]));
-                startTime = LocalDateTime.parse(taskElems[6]);
+                try {
+                    startTime = LocalDateTime.parse(taskElems[6]);
+                }
+                catch (DateTimeParseException e) {
+                    startTime = null;
+                }
             }
 
             if (typeTask == TypeTask.SUBTASK) {

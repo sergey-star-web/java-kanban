@@ -32,10 +32,10 @@ public class Main {
         Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 10:00:00");
         Epic epic1 = new Epic("first_epic", "non desc");
         Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW, 60, "2025-08-04 10:30:00");
-        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW, 40, "2025-08-03 10:40:00");
+        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW, 40, "2025-08-03 13:00:00");
         Epic epic2 = new Epic("second_epic", "non desc");
         Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW, 50, "2025-08-03 15:35:00");
-        Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, "2025-08-04 10:00:00");
+        Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, null);
         Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-03 12:00:00");
 
         try {
@@ -72,7 +72,8 @@ public class Main {
         System.out.println();
         System.out.println("Список задач отсортировано1: ");
         for (Task task : sortTasks) {
-            System.out.println(task);
+            System.out.println(task + " Дата окончания: " + task.getEndTime());
+            System.out.println("Проверка на пересечение: " + ftm.problemIntersectionSearch(task));
         }
         System.out.println();
 
