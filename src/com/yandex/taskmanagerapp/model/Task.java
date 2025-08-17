@@ -1,12 +1,11 @@
 package com.yandex.taskmanagerapp.model;
 
+import com.yandex.taskmanagerapp.constants.Constant;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
-import java.text.Format;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -16,7 +15,6 @@ public class Task {
     private Status status;
     private Duration duration;
     private LocalDateTime startTime;
-    private final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public Task(String name, String description, Status status, Integer duration, String startTime) {
         this.name = name;
@@ -33,6 +31,16 @@ public class Task {
         this.status = status;
         setDurationInt(duration);
         setStartTimeString(startTime);
+    }
+
+    public Task(Integer id, String name, String description, Status status, Duration duration,
+                LocalDateTime startTime) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.duration = duration;
+        this.startTime =  startTime;
     }
 
     public Task(Integer id, String name, String description, Status status) {
@@ -113,7 +121,7 @@ public class Task {
                 "," + getName() +
                 "," + getStatus() +
                 "," + getDescription() +
-                "," + getDurationMin() +
+                "," + getDurationMinutes() +
                 "," + getStartTime();
     }
 
@@ -130,14 +138,14 @@ public class Task {
     }
 
     public void setStartTimeString(String startTime) {
-        this.startTime = LocalDateTime.parse(startTime, format);
+        this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
     }
 
     public Duration getDuration() {
         return this.duration;
     }
 
-    public Integer getDurationMin() {
+    public Integer getDurationMinutes() {
         if (this.duration == null) {
             return 0;
         } else {
@@ -151,9 +159,5 @@ public class Task {
 
     public void setDurationInt(Integer duration) {
         this.duration = Duration.ofMinutes(duration);
-    }
-
-    public DateTimeFormatter getFormat() {
-        return this.format;
     }
 }

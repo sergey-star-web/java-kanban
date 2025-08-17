@@ -9,6 +9,8 @@ import com.yandex.taskmanagerapp.model.Task;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -34,30 +36,33 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (taskElems.length > 0) {
             Integer id = Integer.parseInt(taskElems[0]);
-            TypeTask typeTask;
-            String name;
-            Status status;
-            String description;
+            TypeTask typeTask = null;
+            String name = null;
+            Status status = null;
+            String description = null;
+            Duration duration = null;
+            LocalDateTime startTime = null;
 
             typeTask = TypeTask.valueOf(taskElems[1]);
-            if (typeTask == null) return null;
             name = taskElems[2];
-            if (name.equals(null)) return null;
             status = Status.valueOf(taskElems[3]);
-            if (status == null) return null;
             description = taskElems[4].replaceFirst("Description ", "");
-            if (description.equals(null)) return null;
+
+            if (typeTask == TypeTask.SUBTASK || typeTask == TypeTask.TASK) {
+                duration = Duration.ofMinutes(Integer.parseInt(taskElems[5]));
+                startTime = LocalDateTime.parse(taskElems[6]);
+            }
 
             if (typeTask == TypeTask.SUBTASK) {
-                Integer idEpic = Integer.parseInt(taskElems[5]);
-                Subtask subtask = new Subtask(id, name, description, status, idEpic);
+                Integer idEpic = Integer.parseInt(taskElems[7]);
+                Subtask subtask = new Subtask(id, name, description, status, idEpic, duration, startTime);
                 return subtask;
             } else if (typeTask == TypeTask.EPIC) {
                 Epic epic = new Epic(id, name, description, status);
                 updateSubtasksInEpic(epic);
                 return epic;
             } else if (typeTask == TypeTask.TASK) {
-                Task task = new Task(id, name, description, status);
+                Task task = new Task(id, name, description, status, duration, startTime);
                 return task;
             }
         }
@@ -139,8 +144,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    protected void updateValuesInEpic(Integer idEpic) {
-        super.updateValuesInEpic(idEpic);
+    protected void updateDataInEpic(Integer idEpic) {
+        super.updateDataInEpic(idEpic);
         save();
     }
 

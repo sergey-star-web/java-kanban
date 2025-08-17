@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.TreeSet;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -27,15 +28,15 @@ public class Main {
         File file;
         File fileTestLoad;
 
-        Task task1 = new Task("first_task", "non desc", Status.NEW, 35, "2025-08-01 10:15:30");
-        Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 14:00:00");
+        Task task1 = new Task("first_task", "non desc", Status.NEW, 35, "2025-08-01 14:15:30");
+        Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 10:00:00");
         Epic epic1 = new Epic("first_epic", "non desc");
-        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW, 60, "2025-08-02 10:30:00");
+        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW, 60, "2025-08-04 10:30:00");
         Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW, 40, "2025-08-03 10:40:00");
         Epic epic2 = new Epic("second_epic", "non desc");
         Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW, 50, "2025-08-03 15:35:00");
         Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, "2025-08-04 10:00:00");
-        Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-04 12:00:00");
+        Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-03 12:00:00");
 
         try {
             file = File.createTempFile("historyTasks", ".csv", new File("C:"));
@@ -63,6 +64,14 @@ public class Main {
         System.out.println();
         System.out.println("Список задач1: ");
         for (Task task : tasksList) {
+            System.out.println(task);
+        }
+        System.out.println();
+
+        TreeSet<Task> sortTasks = ftm.getPrioritizedTasks();
+        System.out.println();
+        System.out.println("Список задач отсортировано1: ");
+        for (Task task : sortTasks) {
             System.out.println(task);
         }
         System.out.println();
