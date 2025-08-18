@@ -9,6 +9,7 @@ import com.yandex.taskmanagerapp.model.Epic;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     private Integer counterId = 0;
@@ -28,66 +29,68 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> tasksList = new ArrayList<>();
-
-        for (Task task : tasks.values()) {
-            if (!(task instanceof Subtask) && !(task instanceof Epic)) {
-                tasksList.add(task);
-                historyManager.add(task);
-            }
-        }
+        ArrayList<Task> tasksList = (ArrayList<Task>) tasks.values().stream()
+                .filter(t -> !(t instanceof Subtask) && !(t instanceof Epic))
+                .map(t -> {
+                    historyManager.add(t);
+                    return t;
+                })
+                .collect(Collectors.toList());
         return tasksList;
     }
 
     @Override
     public ArrayList<Subtask> getSubtasks() {
-        ArrayList<Subtask> subTasksList = new ArrayList<>();
-
-        for (Task task : tasks.values()) {
-            if (task instanceof Subtask) {
-                subTasksList.add((Subtask) task);
-                historyManager.add(task);
-            }
-        }
+        ArrayList<Subtask> subTasksList = (ArrayList<Subtask>) tasks.values().stream()
+                .filter(t -> t instanceof Subtask)
+                .map(t -> {
+                    historyManager.add(t);
+                    return (Subtask) t;
+                })
+                .collect(Collectors.toList());
         return subTasksList;
     }
 
     @Override
     public ArrayList<Epic> getEpics() {
-        ArrayList<Epic> epicList = new ArrayList<>();
-
-        for (Task task : tasks.values()) {
-            if (task instanceof Epic) {
-                epicList.add((Epic) task);
-                historyManager.add(task);
-            }
-        }
+        ArrayList<Epic> epicList = (ArrayList<Epic>) tasks.values().stream()
+                .filter(t -> t instanceof Epic)
+                .map(t -> {
+                    historyManager.add(t);
+                    return (Epic) t;
+                })
+                .collect(Collectors.toList());
         return epicList;
     }
 
     @Override
     public Task getTask(Integer id) {
-        for (Task task : tasks.values()) {
-            if (task.getId() == id) {
-                historyManager.add(task);
-                return task;
-            }
+        Optional<Task> task = tasks.values()
+                .stream()
+                .filter(t -> t.getId() == id)
+                .map(t -> {
+                        historyManager.add(t);
+                        return t;
+                })
+                .findFirst();
+        if (task.isPresent()) {
+            return task.get();
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
     public ArrayList<Subtask> getSubtasksInEpic(Integer id) {
         if (!(tasks.get(id) instanceof Epic epic)) return null;
-
-        ArrayList<Subtask> subtasks = new ArrayList<>();
-
-        for (Subtask subtask : epic.getSubtasks()) {
-            Task task = tasks.get(subtask.getId());
-            subtasks.add((Subtask) task);
-            historyManager.add(task);
-        }
-
+        ArrayList<Subtask> subtasks = (ArrayList<Subtask>) epic.getSubtasks()
+                .stream()
+                .map(s -> {
+                    Task task = tasks.get(s.getId());
+                    historyManager.add(task);
+                    return (Subtask) task;
+                })
+                .collect(Collectors.toList());
         return subtasks;
     }
 
@@ -98,15 +101,14 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(Integer id) {
-        Epic epic = null;
-
-        for (Task task : tasks.values()) {
-            if (task.getId() == id && task instanceof Epic) {
-                epic = (Epic) task;
-                for (Subtask subtask : epic.getSubtasks()) {
-                    tasks.remove(subtask.getId());
-                }
-            }
+        Epic epic = (Epic) tasks.values().stream()
+                .filter(t -> t.getId() == id && t instanceof Epic)
+                .findFirst()
+                .orElse(null);
+        if (epic != null) {
+            epic.getSubtasks()
+                    .stream()
+                    .map(t -> tasks.remove(t.getId()));
         }
         if (tasks.get(id) instanceof Subtask) {
             Subtask subtask = (Subtask) tasks.get(id);
@@ -133,8 +135,11 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             this.counterId = task.getId() + 1;
         }
-        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(task));
-        tasks.put(task.getId(), task);
+        if (!problemIntersectionSearch(task)) {
+            tasks.put(task.getId(), task);
+        } else {
+            System.out.println("Таск: " + task + " Не добавлен, так как имеется пересечение.");
+        }
     }
 
     @Override
@@ -146,20 +151,22 @@ public class InMemoryTaskManager implements TaskManager {
                 epic = (Epic) task;
             }
         }
-
         if (checkIdForCorrect(subtask)) {
             this.counterId++;
             subtask.setId(this.counterId);
         } else {
             this.counterId = subtask.getId() + 1;
         }
-        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(subtask));
-        tasks.put(subtask.getId(), subtask);
-        if (epic != null) {
-            ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
-            subtasksInEpic.add(subtask);
+        if (!problemIntersectionSearch(subtask)) {
+            tasks.put(subtask.getId(), subtask);
+            if (epic != null) {
+                ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
+                subtasksInEpic.add(subtask);
+            }
+            updateDataInEpic(subtask.getIdEpic());
+        } else {
+            System.out.println("Сабтаск: " + subtask + " Не добавлен, так как имеется пересечение.");
         }
-        updateDataInEpic(subtask.getIdEpic());
     }
 
     @Override
@@ -170,7 +177,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             this.counterId = epic.getId() + 1;
         }
-        System.out.println("AAAAAAAAA: " + problemIntersectionSearch(epic));
         tasks.put(epic.getId(), epic);
     }
 
@@ -245,20 +251,28 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        tasks.put(task.getId(), task);
+        if (!problemIntersectionSearch(task)) {
+            tasks.put(task.getId(), task);
+        } else {
+            System.out.println("Таск: " + task + " не обновлён, так как имеется пересечение.");
+        }
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         Epic epic = (Epic) tasks.get(subtask.getIdEpic());
 
-        tasks.put(subtask.getId(), subtask);
-        if (epic != null) {
-            ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
-            subtasksInEpic.remove(subtask);
-            subtasksInEpic.add(subtask);
+        if (!problemIntersectionSearch(subtask)) {
+            tasks.put(subtask.getId(), subtask);
+            if (epic != null) {
+                ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
+                subtasksInEpic.remove(subtask);
+                subtasksInEpic.add(subtask);
+            }
+            updateDataInEpic(subtask.getIdEpic());
+        } else {
+            System.out.println("Сабтаск: " + subtask + " не обновлён, так как имеется пересечение.");
         }
-        updateDataInEpic(subtask.getIdEpic());
     }
 
     @Override
@@ -274,14 +288,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtasksInEpic(Epic epic) {
         if (epic != null) {
-            ArrayList<Subtask> subtasksInEpic = null;
-            for (Task task : tasks.values()) {
-                if (task.getType() == TypeTask.SUBTASK) {
-                    if (((Subtask) task).getIdEpic() == epic.getId()) {
-                        subtasksInEpic.add((Subtask) task);
-                    }
-                }
-            }
+            ArrayList<Subtask> subtasksInEpic = (ArrayList<Subtask>) tasks.values()
+                    .stream()
+                    .filter(t -> t.getType() == TypeTask.SUBTASK && ((Subtask) t).getIdEpic() == epic.getId())
+                    .map(t -> (Subtask) t)
+                    .collect(Collectors.toList());
             if (subtasksInEpic != null && !subtasksInEpic.isEmpty()) {
                 epic.setSubtasks(subtasksInEpic);
             }
@@ -311,14 +322,13 @@ public class InMemoryTaskManager implements TaskManager {
                 existTask = prioritizedTasks.stream()
                         .filter(t -> t.getStartTime() != null && t.getEndTime() != null
                                 && (
-                                        startTime.isBefore(t.getEndTime()) || t.getEndTime().equals(startTime)
+                                        (startTime.isBefore(t.getEndTime()) || t.getEndTime().equals(startTime))
                                             &&
-                                        endTime.isAfter(t.getStartTime()) || t.getStartTime().equals(endTime)
+                                        (endTime.isAfter(t.getStartTime()) || t.getStartTime().equals(endTime))
                                 )
                         )
                         .findFirst().orElse(null);
                 if (existTask != null) {
-                    System.out.println("Вот например: " + existTask);
                     return true;
                 }
             }

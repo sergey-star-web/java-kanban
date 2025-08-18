@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -73,8 +74,12 @@ public class Main {
         System.out.println("Список задач отсортировано1: ");
         for (Task task : sortTasks) {
             System.out.println(task + " Дата окончания: " + task.getEndTime());
-            System.out.println("Проверка на пересечение: " + ftm.problemIntersectionSearch(task));
         }
+        System.out.println();
+
+        System.out.println();
+        ArrayList<Subtask> myTasksList = ftm.getSubtasksInEpic(3);
+        System.out.println("Список сабтасков в эпике: " + myTasksList);
         System.out.println();
 
         sub3.setStatus(Status.DONE);
@@ -88,6 +93,13 @@ public class Main {
 
         getSubTask = (Subtask) ftm.getTask(sub3.getId());
         System.out.println(getSubTask);
+
+        System.out.println();
+        System.out.println("Таски: " + ftm.getTasks());
+        System.out.println();
+        System.out.println("Сабтаски: " + ftm.getSubtasks());
+        System.out.println();
+        System.out.println("Эпики: " + ftm.getEpics());
 
         System.out.println();
         historyTasks = ftm.getHistory();
