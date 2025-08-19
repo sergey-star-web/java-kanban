@@ -32,7 +32,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private TypeTask convertToTypeTask (String text) {
+    private TypeTask convertToTypeTask(String text) {
         switch (text) {
             case "TASK":
                 return TypeTask.TASK;
@@ -69,8 +69,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 duration = Duration.ofMinutes(Integer.parseInt(taskElems[5]));
                 try {
                     startTime = LocalDateTime.parse(taskElems[6]);
-                }
-                catch (DateTimeParseException e) {
+                } catch (DateTimeParseException e) {
                     startTime = null;
                 }
             }
