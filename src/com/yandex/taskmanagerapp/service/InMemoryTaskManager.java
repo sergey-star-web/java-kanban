@@ -69,8 +69,8 @@ public class InMemoryTaskManager implements TaskManager {
                 .stream()
                 .filter(t -> t.getId() == id)
                 .map(t -> {
-                        historyManager.add(t);
-                        return t;
+                    historyManager.add(t);
+                    return t;
                 })
                 .findFirst();
         if (task.isPresent()) {
@@ -285,6 +285,10 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
+    public HistoryManager getInMemoryHistory() {
+        return historyManager;
+    }
+
     @Override
     public void updateSubtasksInEpic(Epic epic) {
         if (epic != null) {
@@ -320,7 +324,7 @@ public class InMemoryTaskManager implements TaskManager {
                 Task existTask;
                 TreeSet<Task> prioritizedTasks = getPrioritizedTasks();
                 existTask = prioritizedTasks.stream()
-                        .filter(t -> t.getStartTime() != null && t.getEndTime() != null
+                        .filter(t -> t.getStartTime() != null && t.getEndTime() != null && t.getId() != task.getId()
                                 && (
                                         (startTime.isBefore(t.getEndTime()) || t.getEndTime().equals(startTime))
                                             &&

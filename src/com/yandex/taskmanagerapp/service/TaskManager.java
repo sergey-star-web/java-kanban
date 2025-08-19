@@ -39,4 +39,6 @@ public interface TaskManager {
     List<Task> getAllTasks();
 
     void updateSubtasksInEpic(Epic epic);
+
+    HistoryManager getInMemoryHistory();
 }

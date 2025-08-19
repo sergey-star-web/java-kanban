@@ -32,6 +32,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    private TypeTask convertToTypeTask (String text) {
+        switch (text) {
+            case "TASK":
+                return TypeTask.TASK;
+            case "SUBTASK":
+                return TypeTask.SUBTASK;
+            case "EPIC":
+                return TypeTask.EPIC;
+            default:
+                return null;
+        }
+    }
+
     private Task fromString(String value) {
         String[] taskElems = value.split(",");
 
@@ -44,7 +57,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Duration duration = null;
             LocalDateTime startTime = null;
 
-            typeTask = TypeTask.valueOf(taskElems[1]);
+            typeTask = convertToTypeTask(taskElems[1]);
+            if (typeTask == null) {
+                return null;
+            }
             name = taskElems[2];
             status = Status.valueOf(taskElems[3]);
             description = taskElems[4].replaceFirst("Description ", "");
@@ -172,5 +188,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.updateEpic(epic);
         save();
     }
-
 }

@@ -150,6 +150,11 @@ public class Task {
         return startTimeOPtional.orElse(null);
     }
 
+    public String getStartTimeString() {
+        Optional<LocalDateTime> startTimeOPtional = Optional.ofNullable(this.startTime);
+        return startTimeOPtional.orElse(null).format(Constant.dateFormat);
+    }
+
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }

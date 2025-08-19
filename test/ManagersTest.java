@@ -51,7 +51,7 @@ public class ManagersTest {
         Subtask subtaskPrev = (Subtask) tm.getHistory().getFirst();
         subtaskPrev = new Subtask(subtaskPrev.getName(), subtaskPrev.getDescription(), subtaskPrev.getStatus(),
                 Integer.parseInt(String.valueOf(subtaskPrev.getDuration().toMinutes())),
-                subtaskPrev.getStartTime().toString());
+                subtaskPrev.getStartTimeString());
         subtaskPrev.setIdEpic(subtask.getIdEpic());
 
         subtask.setDescription("test subtask update description");
@@ -61,7 +61,7 @@ public class ManagersTest {
         Subtask subtaskCurr = (Subtask) tm.getHistory().getFirst();
         subtaskCurr = new Subtask(subtaskCurr.getName(), subtaskCurr.getDescription(), subtaskCurr.getStatus(),
                 Integer.parseInt(String.valueOf(subtaskCurr.getDuration().toMinutes())),
-                subtaskCurr.getStartTime().toString());
+                subtaskCurr.getStartTimeString());
         subtaskCurr.setIdEpic(subtask.getIdEpic());
 
         assertFalse(subtaskPrev.getDescription().equals(subtaskCurr.getDescription()), "Описание сабтасков не должно быть одинаковым");
