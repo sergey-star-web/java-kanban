@@ -318,7 +318,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             LocalDateTime endTime;
             LocalDateTime startTime;
-            if (task.getEndTime() != null && task.getStartTime() != null){
+            if (task.getEndTime() != null && task.getStartTime() != null) {
                 endTime = task.getEndTime();
                 startTime = task.getStartTime();
                 Task existTask;
