@@ -320,7 +320,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    public boolean canInsertInPrioritizedTasks (Task task) {
+    public boolean canInsertInPrioritizedTasks(Task task) {
         if (task.getStartTime() != null) {
             return true;
         } else {
@@ -332,7 +332,7 @@ public class InMemoryTaskManager implements TaskManager {
         return this.prioritizedTasks.stream().collect(Collectors.toList());
     }
 
-    public boolean isIntersectionProblem (Task task) {
+    public boolean isIntersectionProblem(Task task) {
         if (task.getType() == TypeTask.EPIC || getPrioritizedTasks().isEmpty()) {
             return false;
         } else {
