@@ -69,7 +69,7 @@ public class Main {
         }
         System.out.println();
 
-        TreeSet<Task> sortTasks = ftm.getPrioritizedTasks();
+        List<Task> sortTasks = ftm.getPrioritizedTasks();
         System.out.println();
         System.out.println("Список задач отсортировано1: ");
         for (Task task : sortTasks) {
@@ -194,6 +194,14 @@ public class Main {
         System.out.println("Список задач после восстановления: ");
         for (Task task : tasksList) {
             System.out.println(task);
+        }
+        System.out.println();
+
+        sortTasks = ftmLoad.getPrioritizedTasks();
+        System.out.println();
+        System.out.println("Список задач отсортировано после восстановления: ");
+        for (Task task : sortTasks) {
+            System.out.println(task + " Дата окончания: " + task.getEndTime());
         }
         System.out.println();
 

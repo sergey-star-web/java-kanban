@@ -7,7 +7,6 @@ import com.yandex.taskmanagerapp.enums.TypeTask;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Task {
     private Integer id;
@@ -138,21 +137,25 @@ public class Task {
                 "," + getStartTime();
     }
 
-    public LocalDateTime getEndTime() {
+    public LocalDateTime calcEndTime() {
         if (this.startTime != null) {
             return this.startTime.plusMinutes(this.duration.toMinutes());
         }
         return null;
     }
 
+    public LocalDateTime getEndTime() {
+        return calcEndTime();
+    }
+
     public LocalDateTime getStartTime() {
-        Optional<LocalDateTime> startTimeOPtional = Optional.ofNullable(this.startTime);
-        return startTimeOPtional.orElse(null);
+        LocalDateTime startTimeOPtional = this.startTime;
+        return startTimeOPtional;
     }
 
     public String getStartTimeString() {
-        Optional<LocalDateTime> startTimeOPtional = Optional.ofNullable(this.startTime);
-        return startTimeOPtional.orElse(null).format(Constant.dateFormat);
+        LocalDateTime startTimeOPtional = this.startTime;
+        return startTimeOPtional.format(Constant.dateFormat);
     }
 
     public void setStartTime(LocalDateTime startTime) {
