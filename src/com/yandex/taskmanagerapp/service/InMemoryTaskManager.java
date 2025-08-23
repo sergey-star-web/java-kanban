@@ -79,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (this.tasks.get(id).getType() == TypeTask.EPIC) {
             epic = (Epic) this.tasks.get(id);
         } else {
-            return null;
+            return new ArrayList<>();
         }
         ArrayList<Subtask> subtasks = (ArrayList<Subtask>) epic.getSubtasks()
                 .stream()
@@ -144,7 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
                 this.prioritizedTasks.add(task);
             }
         } else {
-            System.out.println("Таск: " + task + " Не добавлен, так как имеется пересечение.");
+            System.out.println(task + " Не добавлен, так как имеется пересечение.");
         }
     }
 
@@ -157,25 +157,12 @@ public class InMemoryTaskManager implements TaskManager {
                 epic = (Epic) task;
             }
         }
-        if (checkIdForCorrect(subtask)) {
-            this.counterId++;
-            subtask.setId(this.counterId);
-        } else {
-            this.counterId = subtask.getId() + 1;
+        addTask(subtask);
+        if (epic != null) {
+            ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
+            subtasksInEpic.add(subtask);
         }
-        if (!isIntersectionProblem(subtask)) {
-            this.tasks.put(subtask.getId(), subtask);
-            if (epic != null) {
-                ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
-                subtasksInEpic.add(subtask);
-            }
-            updateDataInEpic(subtask.getIdEpic());
-            if (canInsertInPrioritizedTasks(subtask)) {
-                this.prioritizedTasks.add(subtask);
-            }
-        } else {
-            System.out.println("Сабтаск: " + subtask + " Не добавлен, так как имеется пересечение.");
-        }
+        updateDataInEpic(subtask.getIdEpic());
     }
 
     @Override
@@ -267,7 +254,7 @@ public class InMemoryTaskManager implements TaskManager {
                 this.prioritizedTasks.add(task);
             }
         } else {
-            System.out.println("Таск: " + task + " не обновлён, так как имеется пересечение.");
+            System.out.println(task + " не обновлён, так как имеется пересечение.");
         }
     }
 
@@ -275,21 +262,13 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         Epic epic = (Epic) this.tasks.get(subtask.getIdEpic());
 
-        if (!isIntersectionProblem(subtask)) {
-            this.tasks.put(subtask.getId(), subtask);
-            if (canInsertInPrioritizedTasks(subtask)) {
-                this.prioritizedTasks.remove(subtask);
-                this.prioritizedTasks.add(subtask);
-            }
-            if (epic != null) {
-                ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
-                subtasksInEpic.remove(subtask);
-                subtasksInEpic.add(subtask);
-            }
-            updateDataInEpic(subtask.getIdEpic());
-        } else {
-            System.out.println("Сабтаск: " + subtask + " не обновлён, так как имеется пересечение.");
+        updateTask(subtask);
+        if (epic != null) {
+            ArrayList<Subtask> subtasksInEpic = epic.getSubtasks();
+            subtasksInEpic.remove(subtask);
+            subtasksInEpic.add(subtask);
         }
+        updateDataInEpic(subtask.getIdEpic());
     }
 
     @Override
@@ -321,11 +300,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public boolean canInsertInPrioritizedTasks(Task task) {
-        if (task.getStartTime() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return task.getStartTime() != null;
     }
 
     public List<Task> getPrioritizedTasks() {

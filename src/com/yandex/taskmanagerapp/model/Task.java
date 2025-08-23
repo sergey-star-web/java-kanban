@@ -15,6 +15,7 @@ public class Task {
     private Status status;
     private Duration duration;
     private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     public Task(String name, String description, Status status, Integer duration, String startTime) {
         this.name = name;
@@ -53,6 +54,7 @@ public class Task {
             this.duration = duration;
         }
         this.startTime = startTime;
+        calcEndTime();
     }
 
     public Task(Integer id, String name, String description, Status status) {
@@ -137,15 +139,18 @@ public class Task {
                 "," + getStartTime();
     }
 
-    public LocalDateTime calcEndTime() {
-        if (this.startTime != null) {
-            return this.startTime.plusMinutes(this.duration.toMinutes());
+    protected void calcEndTime() {
+        if (this.startTime != null && this.duration != null) {
+            this.endTime = this.startTime.plusMinutes(this.duration.toMinutes());
+        } else if (this.startTime != null) {
+            this.endTime = this.startTime;
+        } else {
+            this.endTime = null;
         }
-        return null;
     }
 
     public LocalDateTime getEndTime() {
-        return calcEndTime();
+        return this.endTime;
     }
 
     public LocalDateTime getStartTime() {
@@ -160,14 +165,20 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+        calcEndTime();
     }
 
     public void setStartTimeString(String startTime) {
         if (startTime != null) {
             this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
+            calcEndTime();
         } else {
             this.startTime = null;
         }
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
     }
 
     public Duration getDuration() {
@@ -184,9 +195,11 @@ public class Task {
 
     public void setDuration(Duration duration) {
         this.duration = duration;
+        calcEndTime();
     }
 
     public void setDurationInt(Integer duration) {
         this.duration = Duration.ofMinutes(duration);
+        calcEndTime();
     }
 }
