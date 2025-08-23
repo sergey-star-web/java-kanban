@@ -59,6 +59,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         return newNode;
     }
 
+    @Override
     public Task getTask(int id) {
         Node<Task> node = placeInspectionTask.get(id);
         Optional<Task> taskOptional = Optional.ofNullable(node).map(Node::getData);
@@ -76,8 +77,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
+    @Override
     public int size() {
         return placeInspectionTask.size();
     }
-
 }

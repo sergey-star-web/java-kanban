@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -27,13 +28,15 @@ public class Main {
         File file;
         File fileTestLoad;
 
-        Task task1 = new Task("first_task", "non desc", Status.NEW);
-        Task task2 = new Task("second_task", "non desc", Status.NEW);
+        Task task1 = new Task("first_task", "non desc", Status.NEW, 35, "2025-08-01 14:15:30");
+        Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 10:00:00");
         Epic epic1 = new Epic("first_epic", "non desc");
-        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW);
-        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW);
+        Subtask sub1 = new Subtask("first_sub", "non desc", Status.NEW, 60, "2025-08-04 10:30:00");
+        Subtask sub2 = new Subtask("second_sub", "non desc", Status.NEW, 40, "2025-08-03 13:00:00");
         Epic epic2 = new Epic("second_epic", "non desc");
-        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW);
+        Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW, 50, "2025-08-03 15:35:00");
+        Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, null);
+        Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-03 12:00:00");
 
         try {
             file = File.createTempFile("historyTasks", ".csv", new File("C:"));
@@ -49,9 +52,13 @@ public class Main {
         sub1.setIdEpic(epic1.getId());
         sub2.setIdEpic(epic1.getId());
         sub3.setIdEpic(epic2.getId());
+        sub4.setIdEpic(epic1.getId());
+        sub5.setIdEpic(epic2.getId());
         ftm.addSubtask(sub1);
         ftm.addSubtask(sub2);
         ftm.addSubtask(sub3);
+        ftm.addSubtask(sub4);
+        ftm.addSubtask(sub5);
 
         tasksList = ftm.getAllTasks();
         System.out.println();
@@ -59,6 +66,19 @@ public class Main {
         for (Task task : tasksList) {
             System.out.println(task);
         }
+        System.out.println();
+
+        List<Task> sortTasks = ftm.getPrioritizedTasks();
+        System.out.println();
+        System.out.println("Список задач отсортировано1: ");
+        for (Task task : sortTasks) {
+            System.out.println(task + " Дата окончания: " + task.getEndTime());
+        }
+        System.out.println();
+
+        System.out.println();
+        ArrayList<Subtask> myTasksList = ftm.getSubtasksInEpic(3);
+        System.out.println("Список сабтасков в эпике: " + myTasksList);
         System.out.println();
 
         sub3.setStatus(Status.DONE);
@@ -72,6 +92,13 @@ public class Main {
 
         getSubTask = (Subtask) ftm.getTask(sub3.getId());
         System.out.println(getSubTask);
+
+        System.out.println();
+        System.out.println("Таски: " + ftm.getTasks());
+        System.out.println();
+        System.out.println("Сабтаски: " + ftm.getSubtasks());
+        System.out.println();
+        System.out.println("Эпики: " + ftm.getEpics());
 
         System.out.println();
         historyTasks = ftm.getHistory();
@@ -166,6 +193,14 @@ public class Main {
         System.out.println("Список задач после восстановления: ");
         for (Task task : tasksList) {
             System.out.println(task);
+        }
+        System.out.println();
+
+        sortTasks = ftmLoad.getPrioritizedTasks();
+        System.out.println();
+        System.out.println("Список задач отсортировано после восстановления: ");
+        for (Task task : sortTasks) {
+            System.out.println(task + " Дата окончания: " + task.getEndTime());
         }
         System.out.println();
 

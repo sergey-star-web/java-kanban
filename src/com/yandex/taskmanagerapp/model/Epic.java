@@ -1,6 +1,7 @@
 package com.yandex.taskmanagerapp.model;
 
 import java.util.ArrayList;
+
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
@@ -35,7 +36,10 @@ public class Epic extends Task {
                 "," + getType() +
                 "," + getName() +
                 "," + getStatus() +
-                "," + getDescription();
+                "," + getDescription() +
+                "," + getDurationMinutes() +
+                "," + getStartTime() +
+                "," + getEndTime();
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -53,5 +57,4 @@ public class Epic extends Task {
     public void addSubtask(Subtask subtask) {
         this.subtasks.add(subtask);
     }
-
 }

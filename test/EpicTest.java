@@ -16,8 +16,8 @@ class EpicTest {
     void epicCannotContainItselfInSubtasks() {
         Epic epic = new Epic("Epic", "non description");
         tm.addEpic(epic);
-        Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW );
-        Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW );
+        Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
+        Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW, 50, "2025-08-01 14:00:00");
         ArrayList<Subtask> subtasks = new ArrayList<>();
 
         subtask2.setId(epic.getId());
@@ -57,7 +57,7 @@ class EpicTest {
     @Test
     void checkImmutabilityAllFieldsEpics() {
         Epic epic = new Epic("first_epic", "non desc");
-        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW);
+        Subtask subtask = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
         boolean allFieldsEpicsEquals = false;
 
         tm.addEpic(epic);
@@ -71,5 +71,34 @@ class EpicTest {
             allFieldsEpicsEquals = true;
         }
         assertTrue(allFieldsEpicsEquals, "Поля не должны меняться при добавлении эпика в менеджер");
+    }
+
+    @Test
+    void calcStatusEpicIfAllSubtasksHaveStatusNew() {
+        Epic epic = new Epic("Epic", "non description");
+        tm.addEpic(epic);
+        Subtask subtask1 = new Subtask("first_sub", "non desc", Status.NEW, 30, "2025-08-01 10:00:00");
+        Subtask subtask2 = new Subtask("second_sub", "non desc", Status.NEW, 50, "2025-08-01 14:00:00");
+        subtask1.setIdEpic(epic.getId());
+        subtask2.setIdEpic(epic.getId());
+        tm.addSubtask(subtask1);
+        tm.addSubtask(subtask2);
+        assertEquals(epic.getStatus(), Status.NEW, "Статус эпика должен быть: NEW");
+
+        subtask1.setStatus(Status.DONE);
+        subtask2.setStatus(Status.DONE);
+        tm.updateSubtask(subtask1);
+        tm.updateSubtask(subtask2);
+        assertEquals(epic.getStatus(), Status.DONE, "Статус эпика должен быть: DONE");
+
+        subtask2.setStatus(Status.NEW);
+        tm.updateSubtask(subtask2);
+        assertEquals(epic.getStatus(), Status.IN_PROGRESS, "Статус эпика должен быть: IN_PROGRESS");
+
+        subtask1.setStatus(Status.IN_PROGRESS);
+        subtask2.setStatus(Status.IN_PROGRESS);
+        tm.updateSubtask(subtask1);
+        tm.updateSubtask(subtask2);
+        assertEquals(epic.getStatus(), Status.IN_PROGRESS, "Статус эпика должен быть: IN_PROGRESS");
     }
 }
