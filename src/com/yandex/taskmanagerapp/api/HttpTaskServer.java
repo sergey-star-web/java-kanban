@@ -1,11 +1,15 @@
 package com.yandex.taskmanagerapp.api;
 
-import com.sun.net.httpserver.HttpContext;
-import com.sun.net.httpserver.HttpServer;
+import com.google.gson.*;
+import com.sun.net.httpserver.*;
+import com.yandex.taskmanagerapp.api.handlers.BaseHttpHandler;
+import com.yandex.taskmanagerapp.api.handlers.TaskHandler;
 import com.yandex.taskmanagerapp.constants.Constant;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,9 +18,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.exceptions.ManagerSaveException;
 import com.yandex.taskmanagerapp.model.Epic;
@@ -30,7 +32,7 @@ import com.yandex.taskmanagerapp.service.TaskManager;
 public class HttpTaskServer {
     private static HttpClient httpClient;
     private static HttpServer httpServer;
-    private static TaskManager taskManager = Managers.getMemoryTaskManager();
+    private static TaskManager taskManager;
 
     public static void main(String[] args) {
 
@@ -76,10 +78,12 @@ public class HttpTaskServer {
                     .GET()
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            //BaseHttpHandler baseHttpHandler = new BaseHttpHandler();
+            //HttpContext httpContext = httpServer.createContext("/hello", new BaseHttpHandler());
             handleRequest(request, response);
 
             System.out.println("Сервер запущен на порту " + Constant.port);
-            //stop();
+            stop();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -91,7 +95,7 @@ public class HttpTaskServer {
     }
 
     public static void stop() {
-        httpServer.stop(0);
+        httpServer.stop(3);
     }
 
     public static void handleRequest(HttpRequest request, HttpResponse response) {
@@ -105,40 +109,72 @@ public class HttpTaskServer {
         }
         // Обработаем каждый метод запроса
         if (method.equals("GET")) {
+
+            //BaseHttpHandler handler = new BaseHttpHandler(taskManager, request);
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
             if (pathMap.equals("tasks")) {
+                String text = null;
                 if (pathId != null) {
-                    taskManager.getTask(pathId);
-                    System.out.println(taskManager.getTask(pathId));
+                    text = taskManager.getTask(pathId).toString();
                 } else {
-                    taskManager.getTasks();
-                    System.out.println(taskManager.getTasks());
+                    text = taskManager.getTasks().toString();
                 }
+               // try {
+                    httpServer.createContext(request.uri().getPath(), new TaskHandler(taskManager, request));
+                    //handler.sendText(response, gson.toJson(text));
+                //} catch (IOException e) {
+                 //   throw new RuntimeException(e);
+                //}
             }
 
             if (pathMap.equals("subtasks")) {
+                String text = null;
                 if (pathId != null) {
-                    taskManager.getTask(pathId);
-                    System.out.println(taskManager.getTask(pathId));
+                    text = taskManager.getTask(pathId).toString();
                 } else {
-                    taskManager.getTasks();
-                    System.out.println(taskManager.getSubtasks());
+                    text = taskManager.getTasks().toString();
+                }
+                try {
+                    handler.sendText(response, gson.toJson(text));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
             if (pathMap.equals("epics")) {
                 String pathS = null;
+                String text = null;
                 if (path.length > 3) {
                     pathS = path[3];
                 }
                 if (pathS != null && pathS.equals("subtasks")) {
-                    taskManager.getSubtasksInEpic(pathId);
-                    System.out.println(taskManager.getSubtasksInEpic(pathId));
+                    text = taskManager.getSubtasksInEpic(pathId).toString();
                 } else if (pathId != null) {
-                    taskManager.getTask(pathId);
-                    System.out.println(taskManager.getTask(pathId));
+                    text = taskManager.getTask(pathId).toString();
                 } else {
-                    taskManager.getTasks();
-                    System.out.println(taskManager.getEpics());
+                    text = taskManager.getTasks().toString();
+                }
+                try {
+                    handler.sendText(response, gson.toJson(text));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (pathMap.equals("history")) {
+                try {
+                    handler.sendText(response, gson.toJson(taskManager.getHistory()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            if (pathMap.equals("prioritized")) {
+                try {
+                    handler.sendText(response, gson.toJson(taskManager.getPrioritizedTasks().toString()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -152,6 +188,7 @@ public class HttpTaskServer {
     }
 
     public static void init(Integer port, Integer backlog, Integer maxConnections) {
+        taskManager = Managers.getMemoryTaskManager();
         try {
             httpClient = HttpClient.newHttpClient();
             httpServer = HttpServer.create();
@@ -164,4 +201,7 @@ public class HttpTaskServer {
         }
     }
 
+    public static TaskManager getTaskManager() {
+        return taskManager;
+    }
 }

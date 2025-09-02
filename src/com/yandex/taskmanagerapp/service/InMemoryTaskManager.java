@@ -2,6 +2,7 @@ package com.yandex.taskmanagerapp.service;
 
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
+import com.yandex.taskmanagerapp.exceptions.NotFoundException;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
@@ -65,12 +66,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(Integer id) {
-        Task task = this.tasks.get(id);
-        if (task != null) {
-            this.historyManager.add(task);
+    public Task getTask(Integer id) throws NotFoundException {
+        try {
+            Task task = this.tasks.get(id);
+            if (task != null) {
+                this.historyManager.add(task);
+            }
+            return task;
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Задача с ID " + id + " не найдена");
         }
-        return task;
     }
 
     @Override

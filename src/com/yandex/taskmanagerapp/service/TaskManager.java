@@ -3,6 +3,7 @@ package com.yandex.taskmanagerapp.service;
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Task;
+import com.yandex.taskmanagerapp.exceptions.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public interface TaskManager {
 
     ArrayList<Epic> getEpics();
 
-    Task getTask(Integer id);
+    Task getTask(Integer id) throws NotFoundException;
 
     ArrayList<Subtask> getSubtasksInEpic(Integer id);
 
@@ -41,4 +42,6 @@ public interface TaskManager {
     void updateSubtasksInEpic(Epic epic);
 
     HistoryManager getInMemoryHistory();
+
+    List<Task> getPrioritizedTasks();
 }
