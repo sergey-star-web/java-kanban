@@ -1,15 +1,13 @@
 package com.yandex.taskmanagerapp.api.handlers;
 
-import com.yandex.taskmanagerapp.api.HttpTaskServer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.yandex.taskmanagerapp.enums.TypeTask;
+import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.util.List;
@@ -22,80 +20,61 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        String response;
-
-        // извлеките метод из запроса
         String method = httpExchange.getRequestMethod();
-
         switch(method) {
             case "POST":
-                response = handlePostRequest(httpExchange);
+                handlePostRequest(httpExchange);
             case "GET":
-                response = handleGetRequest(httpExchange);
-                // не забудьте про ответ для остальных методов
+                handleGetRequest(httpExchange);
             default:
-                response = null;
-        }
-
-        httpExchange.sendResponseHeaders(200, 0);
-        try (OutputStream os = httpExchange.getResponseBody()) {
-            os.write(response.getBytes());
+                sendNotFound(httpExchange,"");
         }
     }
 
-    private String handleGetRequest(HttpExchange httpExchange) {
-        // обработайте GET-запрос в соответствии с условиями задания
-        String method = this.request.method();
-        String[] path = this.request.uri().getPath().split("/");
-        String pathMap = path[1];
-        Integer pathId = null;
-        String text = null;
+    private String[] getPath(HttpExchange httpExchange) {
+        String[] path = httpExchange.getRequestURI().toString().split("/");
+        return path;
+    }
 
+    private Integer getPathId(String[] path) {
+        Integer pathId = null;
         if (path.length > 2) {
             pathId = Integer.parseInt(path[2]);
         }
-        // Обработаем каждый метод запроса
-        if (method.equals("GET")) {
-
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            Gson gson = gsonBuilder.create();
-            if (pathMap.equals("tasks")) {
-                if (pathId != null) {
-                    text = this.taskManager.getTask(pathId).toString();
-                } else {
-                    text = this.taskManager.getTasks().toString();
-                }
-
-            }
-        }
-        return text;
+        return pathId;
     }
 
-    private String handlePostRequest(HttpExchange httpExchange) throws IOException {
-        // обработайте POST-запрос в соответствии с условиями задания
-        URI requestURI = httpExchange.getRequestURI();
-        // извлеките path из запроса
-        String path = httpExchange.getRequestURI().getPath();
-        String[] splitStrings = path.split("/");
-        // а из path — профессию и имя
-        String profession = splitStrings[2];
-        String name = splitStrings[3];
+    private void handleGetRequest(HttpExchange httpExchange) throws IOException {
+        Integer pathId = getPathId(getPath(httpExchange));
 
-        // извлеките тело запроса
-        Headers requestHeaders = httpExchange.getRequestHeaders();
-        String body = httpExchange.getRequestBody().toString();
+        // Обработаем каждый метод запроса
+        if (getPath(httpExchange)[1].equals("tasks")) {
+            if (pathId != null ) {
+                Task task = this.taskManager.getTask(pathId);
+                if (task != null && task.getType() == TypeTask.TASK) {
+                    sendText(httpExchange, gson.toJson(task));
+                } else {
+                    sendNotFound(httpExchange,"");
+                }
+            } else {
+                sendText(httpExchange, gson.toJson(this.taskManager.getTasks()));
+            }
+        }
+    }
 
-        // объедините полученные данные из тела и пути запроса
-        String response = body + ", " + profession;
+    private void handlePostRequest(HttpExchange httpExchange) throws IOException {
+        Integer pathId = getPathId(getPath(httpExchange));
 
-        // извлеките заголовок и в зависимости от условий дополните ответ
-        List<String> wishGoodDay =  requestHeaders.get("X-Wish-Good-Day");
-        if ((wishGoodDay != null) && (wishGoodDay.contains("true"))) {
-            return response + " " + name + "!" + " Хорошего дня!";
-        } else if (wishGoodDay == null) {
-            return response;
-        } else {
-            return "Некорректный метод!";
+        // Обработаем каждый метод запроса
+        if (getPath(httpExchange)[1].equals("tasks")) {
+            if (pathId != null ) {
+                Task task = this.taskManager.getTask(pathId);
+                if (task != null && task.getType() == TypeTask.TASK) {
+                    //sendHasOverlaps(httpExchange, gson.toJson(task));
+                }
+            } else {
+                //sendHasOverlaps(httpExchange, gson.toJson(this.taskManager.getTasks()));
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 package com.yandex.taskmanagerapp.api.handlers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.yandex.taskmanagerapp.constants.Constant;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 import java.io.OutputStream;
@@ -13,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class BaseHttpHandler {
     protected TaskManager taskManager;
     protected HttpRequest request;
+    protected Gson gson = Constant.getGsonObject();
 
     public BaseHttpHandler(TaskManager tm, HttpRequest request) {
         this.taskManager = tm;
