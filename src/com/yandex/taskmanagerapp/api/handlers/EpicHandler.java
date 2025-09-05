@@ -75,7 +75,7 @@ public class EpicHandler extends SubtaskHandler implements HttpHandler {
         ArrayList<Subtask> subCopy = new ArrayList<>(subtasks);
         for (Subtask subtask : subCopy) {
             if (this.taskManager.getSubtasks().contains(subtask)) {
-                if(!subtask.equals(this.taskManager.getSubtasks().contains(subtask))) {
+                if (!subtask.equals(this.taskManager.getSubtasks().contains(subtask))) {
                     this.taskManager.updateSubtask(subtask);
                  }
              } else {
