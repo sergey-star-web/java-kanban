@@ -13,7 +13,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        switch(httpExchange.getRequestMethod()) {
+        switch (httpExchange.getRequestMethod()) {
             case "GET":
                 handleGetRequest(httpExchange);
             default:
