@@ -35,7 +35,7 @@ public class HttpTaskServer {
         Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, null);
         Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-03 12:00:00");
         HttpTaskServer taskserver = new HttpTaskServer(Managers.getMemoryTaskManager());
-        TaskManager taskManager = taskserver.getTaskManager()  ;
+        TaskManager taskManager = taskserver.getTaskManager();
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
