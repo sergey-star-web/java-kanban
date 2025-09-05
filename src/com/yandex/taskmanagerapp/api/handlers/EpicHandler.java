@@ -39,7 +39,7 @@ public class EpicHandler extends SubtaskHandler implements HttpHandler {
             subtasksInEpicPath = path[3];
         }
 
-        if (pathId != null ) {
+        if (pathId != null) {
             Task task = this.taskManager.getTask(pathId);
             if (task != null && subtasksInEpicPath != null && task.getType() == TypeTask.EPIC) {
                 sendText(httpExchange, gson.toJson(this.taskManager.getSubtasksInEpic(task.getId())));

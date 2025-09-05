@@ -55,7 +55,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
     protected void handleGetRequest(HttpExchange httpExchange) throws IOException {
         Integer pathId = getPathId(getPath(httpExchange));
 
-        if (pathId != null ) {
+        if (pathId != null) {
             Task task = this.taskManager.getTask(pathId);
             if (task != null && task.getType() == TypeTask.TASK) {
                 sendText(httpExchange, gson.toJson(task));
@@ -108,7 +108,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     protected void handleDeleteRequest(HttpExchange httpExchange) throws IOException {
         Integer pathId = getPathId(getPath(httpExchange));
-        if (pathId != null ) {
+        if (pathId != null) {
             this.taskManager.deleteTask(pathId);
         }
         sendText(httpExchange, "");

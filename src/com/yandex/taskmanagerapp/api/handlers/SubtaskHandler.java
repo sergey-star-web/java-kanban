@@ -34,7 +34,7 @@ public class SubtaskHandler extends TaskHandler implements HttpHandler {
     protected void handleGetRequest(HttpExchange httpExchange) throws IOException {
         Integer pathId = getPathId(getPath(httpExchange));
 
-        if (pathId != null ) {
+        if (pathId != null) {
             Task task = this.taskManager.getTask(pathId);
             if (task != null && task.getType() == TypeTask.SUBTASK) {
                 sendText(httpExchange, gson.toJson(task));
