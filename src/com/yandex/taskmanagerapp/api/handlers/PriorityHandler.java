@@ -5,17 +5,15 @@ import com.sun.net.httpserver.HttpHandler;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 
 public class PriorityHandler extends BaseHttpHandler implements HttpHandler {
-    public PriorityHandler(TaskManager tm, HttpRequest request) {
-        super(tm, request);
+    public PriorityHandler(TaskManager tm) {
+        super(tm);
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        String method = httpExchange.getRequestMethod();
-        switch(method) {
+        switch(httpExchange.getRequestMethod()) {
             case "GET":
                 handleGetRequest(httpExchange);
             default:
@@ -24,7 +22,6 @@ public class PriorityHandler extends BaseHttpHandler implements HttpHandler {
     }
 
     private void handleGetRequest(HttpExchange httpExchange) throws IOException {
-        String method = httpExchange.getRequestMethod();
         String[] path = httpExchange.getRequestURI().toString().split("/");
         String pathMap = path[1];
 

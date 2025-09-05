@@ -13,9 +13,9 @@ public class Task {
     private String name;
     private String description;
     private Status status;
-    private Duration duration;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
 
     public Task(String name, String description, Status status, Integer duration, String startTime) {
         this.name = name;
@@ -27,6 +27,19 @@ public class Task {
             setDurationInt(duration);
         }
         setStartTimeString(startTime);
+    }
+
+    public Task(String name, String description, Status status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        if (duration == null) {
+            this.duration = Duration.ZERO;
+        } else {
+            this.duration = duration;
+        }
+        this.startTime = startTime;
+        calcEndTime();
     }
 
     public Task(Integer id, String name, String description, Status status, Integer duration, String startTime) {

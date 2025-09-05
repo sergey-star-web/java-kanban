@@ -1,44 +1,30 @@
 package com.yandex.taskmanagerapp.api;
 
-import com.google.gson.*;
 import com.sun.net.httpserver.*;
 import com.yandex.taskmanagerapp.api.handlers.*;
-import com.yandex.taskmanagerapp.api.jsonadapters.DurationAdapter;
 import com.yandex.taskmanagerapp.constants.Constant;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.yandex.taskmanagerapp.api.jsonadapters.LocalDateTimeAdapter;
 import com.yandex.taskmanagerapp.enums.Status;
-import com.yandex.taskmanagerapp.exceptions.ManagerSaveException;
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Task;
-import com.yandex.taskmanagerapp.service.FileBackedTaskManager;
-import com.yandex.taskmanagerapp.service.InMemoryTaskManager;
 import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 public class HttpTaskServer {
     private static HttpClient httpClient;
     private static HttpServer httpServer;
-    private static TaskManager taskManager = Managers.getMemoryTaskManager();
+    private static TaskManager taskManager;
 
     public static void main(String[] args) {
-
         Task task1 = new Task("first_task", "non desc", Status.NEW, 35, "2025-08-01 14:15:30");
         Task task2 = new Task("second_task", "non desc", Status.NEW, 45, "2025-08-01 10:00:00");
         Epic epic1 = new Epic("first_epic", "non desc");
@@ -48,6 +34,8 @@ public class HttpTaskServer {
         Subtask sub3 = new Subtask("thirst_sub", "non desc", Status.NEW, 50, "2025-08-03 15:35:00");
         Subtask sub4 = new Subtask("four_sub", "non desc", Status.NEW, 100, null);
         Subtask sub5 = new Subtask("five_sub", "non desc", Status.NEW, 80, "2025-08-03 12:00:00");
+        HttpTaskServer taskserver = new HttpTaskServer(Managers.getMemoryTaskManager());
+        TaskManager taskManager = taskserver.getTaskManager()  ;
 
         taskManager.addTask(task1);
         taskManager.addTask(task2);
@@ -74,51 +62,51 @@ public class HttpTaskServer {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Content-Type", "application/json;charset=utf-8")
-                .GET()
                 .build();
-        HttpResponse<String> response = null;
-        //= httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        //BaseHttpHandler baseHttpHandler = new BaseHttpHandler();
-        //HttpContext httpContext = httpServer.createContext("/hello", new BaseHttpHandler());
-        start();
-        handleRequest(request, response);
+
+        taskserver.start();
+        taskserver.handleRequest(request);
+
         System.out.println("Сервер запущен на порту: " + Constant.port);
         System.out.println("Путь: " + path);
-        //stop();
+        taskserver.stop();
     }
 
-    public static void start() {
+    public HttpTaskServer(TaskManager taskManager) {
+        HttpTaskServer.taskManager = taskManager;
+    }
+
+    public void start() {
         init(8080, 5, 5);
     }
 
-    public static void stop() {
+    public void stop() {
         httpServer.stop(3);
     }
 
-    public static void handleRequest(HttpRequest request, HttpResponse response) {
+    public void handleRequest(HttpRequest req) {
         // Получаем метод запроса (GET, POST и DELETE)
-        String[] path = request.uri().getPath().split("/");
+        String uriPath = req.uri().getPath();
+        String[] path = uriPath.split("/");
         String pathMap = path[1];
-        Gson gson = Constant.getGsonObject();
+        TaskManager taskManager = getTaskManager();
 
         // Обработаем каждый метод запроса
         if (pathMap.equals("tasks")) {
-            httpServer.createContext(request.uri().getPath(), new TaskHandler(taskManager, request));
+            httpServer.createContext(uriPath, new TaskHandler(taskManager));
         } else if (pathMap.equals("subtasks")) {
-            httpServer.createContext(request.uri().getPath(), new SubtaskHandler(taskManager, request));
+            httpServer.createContext(uriPath, new SubtaskHandler(taskManager));
         } else if (pathMap.equals("epics")) {
-            //Epic epic = (Epic) taskManager.getTask(6);
-            //System.out.println(epic);
-            httpServer.createContext(request.uri().getPath(), new EpicHandler(taskManager, request));
+            httpServer.createContext(uriPath, new EpicHandler(taskManager));
         } else if (pathMap.equals("history")) {
-            httpServer.createContext(request.uri().getPath(), new HistoryHandler(taskManager, request));
+            httpServer.createContext(uriPath, new HistoryHandler(taskManager));
         } else if (pathMap.equals("prioritized")) {
-            httpServer.createContext(request.uri().getPath(), new PriorityHandler(taskManager, request));
+            httpServer.createContext(uriPath, new PriorityHandler(taskManager));
         }
         httpServer.start();
     }
 
-    public static void init(Integer port, Integer backlog, Integer maxConnections) {
+    public void init(Integer port, Integer backlog, Integer maxConnections) {
         try {
             httpClient = HttpClient.newHttpClient();
             httpServer = HttpServer.create();
@@ -131,7 +119,7 @@ public class HttpTaskServer {
         }
     }
 
-    public static TaskManager getTaskManager() {
+    public TaskManager getTaskManager() {
         return taskManager;
     }
 }

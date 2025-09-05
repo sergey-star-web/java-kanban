@@ -44,4 +44,6 @@ public interface TaskManager {
     HistoryManager getInMemoryHistory();
 
     List<Task> getPrioritizedTasks();
+
+    boolean isIntersectionProblem(Task task);
 }

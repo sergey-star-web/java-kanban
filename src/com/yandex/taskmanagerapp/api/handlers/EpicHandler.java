@@ -1,87 +1,110 @@
 package com.yandex.taskmanagerapp.api.handlers;
 
-import com.sun.net.httpserver.Headers;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 import com.yandex.taskmanagerapp.model.Epic;
 import com.yandex.taskmanagerapp.model.Subtask;
+import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.util.List;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
-public class EpicHandler extends BaseHttpHandler implements HttpHandler {
-    public EpicHandler(TaskManager tm, HttpRequest request) {
-        super(tm, request);
+public class EpicHandler extends SubtaskHandler implements HttpHandler {
+    public EpicHandler(TaskManager tm) {
+        super(tm);
     }
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
-        String method = httpExchange.getRequestMethod();
-        switch(method) {
-            case "POST":
-                handlePostRequest(httpExchange);
-            case "GET":
-                handleGetRequest(httpExchange);
-            default:
-                sendNotFound(httpExchange,"");
+        if (getPath(httpExchange)[1].equals("epics")) {
+            callingHandlers(httpExchange);
         }
     }
 
-    private void handleGetRequest(HttpExchange httpExchange) throws IOException {
-        String method = httpExchange.getRequestMethod();
-        String[] path = httpExchange.getRequestURI().toString().split("/");
-        String pathMap = path[1];
-        Epic epic = null;
-        Integer pathId = null;
-        String checkSubsInEpic = null;
-
-        if (path.length > 2) {
-            pathId = Integer.parseInt(path[2]);
-            if (this.taskManager.getTask(pathId).getType() == TypeTask.EPIC) {
-                epic = (Epic) this.taskManager.getTask(pathId);
-            }
-        }
+    @Override
+    protected void handleGetRequest(HttpExchange httpExchange) throws IOException {
+        Integer pathId = getPathId(getPath(httpExchange));
+        String[] path = getPath(httpExchange);
+        String subtasksInEpicPath = null;
         if (path.length > 3) {
-            checkSubsInEpic = path[3];
+            subtasksInEpicPath = path[3];
         }
-        // Обработаем каждый метод запроса
-        if (pathMap.equals("epics")) {
-            if (checkSubsInEpic != null && epic != null) {
-                sendText(httpExchange, gson.toJson(this.taskManager.getSubtasksInEpic(epic.getId())));
-            } else if (pathId != null) {
-                if (epic != null) {
-                    sendText(httpExchange, gson.toJson(epic));
-                } else {
-                    sendNotFound(httpExchange,"");
-                }
+
+        if (pathId != null ) {
+            Task task = this.taskManager.getTask(pathId);
+            if (task != null && subtasksInEpicPath != null && task.getType() == TypeTask.EPIC) {
+                sendText(httpExchange, gson.toJson(this.taskManager.getSubtasksInEpic(task.getId())));
+            } else if (task != null && task.getType() == TypeTask.EPIC && subtasksInEpicPath == null) {
+                sendText(httpExchange, gson.toJson(task));
+            } else {
+                sendNotFound(httpExchange,"");
             }
-            else {
-                sendText(httpExchange, gson.toJson(this.taskManager.getEpics()));
-            }
+        } else {
+            sendText(httpExchange, gson.toJson(this.taskManager.getEpics()));
         }
     }
 
-    private void handlePostRequest(HttpExchange httpExchange) throws IOException {
-        // обработайте POST-запрос в соответствии с условиями задания
-        URI requestURI = httpExchange.getRequestURI();
-        // извлеките path из запроса
-        String path = httpExchange.getRequestURI().getPath();
-        String[] splitStrings = path.split("/");
-        // а из path — профессию и имя
-        String profession = splitStrings[2];
-        String name = splitStrings[3];
+    public Epic epicFromJson(String body) {
+        JsonObject jsonBody = JsonParser.parseString(body).getAsJsonObject();
+        Integer id = Integer.parseInt(jsonBody.get("id").getAsString());
+        String name = jsonBody.get("name").getAsString();
+        String description = jsonBody.get("description").getAsString();
+        Status status = Status.valueOf(jsonBody.get("status").getAsString());
+        ArrayList<Subtask> subtasks = new ArrayList<>();
+        JsonArray jsonSubtasks = jsonBody.get("subtasks").getAsJsonArray();
+        for (JsonElement subtask : jsonSubtasks) {
+            Subtask sub = fromJson(String.valueOf(subtask.getAsJsonObject()));
+            subtasks.add(sub);
+        }
 
-        // извлеките тело запроса
-        Headers requestHeaders = httpExchange.getRequestHeaders();
-        String body = httpExchange.getRequestBody().toString();
-        // объедините полученные данные из тела и пути запроса
-        String response = body + ", " + profession;
-        // извлеките заголовок и в зависимости от условий дополните ответ
-        List<String> wishGoodDay =  requestHeaders.get("X-Wish-Good-Day");
+        Epic epic = new Epic(id, name, description, status);
+        epic.setSubtasks(subtasks);
+        return epic;
+    }
 
+    public void updateSubtasksInTaskManager(ArrayList<Subtask> subtasks) {
+        ArrayList<Subtask> subCopy = new ArrayList<>(subtasks);
+        for (Subtask subtask : subCopy) {
+            if (this.taskManager.getSubtasks().contains(subtask)) {
+                if(!subtask.equals(this.taskManager.getSubtasks().contains(subtask))) {
+                    this.taskManager.updateSubtask(subtask);
+                 }
+             } else {
+                 this.taskManager.addSubtask(subtask);
+             }
+        }
+    }
+
+    @Override
+    protected void handlePostRequest(HttpExchange httpExchange) throws IOException {
+        Integer pathId = getPathId(getPath(httpExchange));
+        InputStream inputStream = httpExchange.getRequestBody();
+        String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        Epic epic = epicFromJson(body);
+
+        if (pathId != null && !this.taskManager.getEpics().contains(epic)) {
+            if (epic.getType() == TypeTask.EPIC && pathId == epic.getId()) {
+                checkIntersectionProblem(epic, httpExchange);
+                this.taskManager.addEpic(epic);
+                ArrayList<Subtask> subtasks = new ArrayList<>(epic.getSubtasks());
+                // обнуляем сабтаски в эпике так как они снова добавятся в updateSubtasksInTaskManager
+                epic.setSubtasks(new ArrayList<>());
+                updateSubtasksInTaskManager(subtasks);
+            }
+        } else {
+            checkIntersectionProblem(epic, httpExchange);
+            this.taskManager.updateEpic(epic);
+            updateSubtasksInTaskManager(epic.getSubtasks());
+        }
+        sendEmpty(httpExchange);
     }
 }
