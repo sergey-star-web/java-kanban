@@ -5,17 +5,11 @@ import com.yandex.taskmanagerapp.api.handlers.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.yandex.taskmanagerapp.enums.Status;
-import com.yandex.taskmanagerapp.model.Epic;
-import com.yandex.taskmanagerapp.model.Subtask;
-import com.yandex.taskmanagerapp.model.Task;
-import com.yandex.taskmanagerapp.service.Managers;
 import com.yandex.taskmanagerapp.service.TaskManager;
 
 public class HttpTaskServer {
