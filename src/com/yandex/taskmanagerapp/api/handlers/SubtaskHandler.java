@@ -56,7 +56,7 @@ public class SubtaskHandler extends TaskHandler implements HttpHandler {
         Duration duration = Duration.ofMinutes(Integer.parseInt(jsonBody.get("duration").getAsString()));
         LocalDateTime startTime = null;
         try {
-            startTime = LocalDateTime.parse(jsonBody.get("startTime").getAsString(), Constant.dateFormat);
+            startTime = LocalDateTime.parse(jsonBody.get("startTime").getAsString(), Constant.DATE_FORMAT);
         } catch (DateTimeParseException | NullPointerException e) {
             startTime = null;
         }

@@ -84,7 +84,7 @@ public class Epic extends Task {
     @Override
     public void setStartTimeString(String startTime) {
         if (startTime != null) {
-            this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
+            this.startTime = LocalDateTime.parse(startTime, Constant.DATE_FORMAT);
         } else {
             this.startTime = null;
         }

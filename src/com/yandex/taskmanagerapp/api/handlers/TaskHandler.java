@@ -46,6 +46,7 @@ public class TaskHandler extends BaseHttpHandler implements HttpHandler {
 
     protected Integer getPathId(String[] path) {
         Integer pathId = null;
+        // Если кол-во элементов в массиве path больше двух, значит передан taskId
         if (path.length > 2) {
             pathId = Integer.parseInt(path[2]);
         }

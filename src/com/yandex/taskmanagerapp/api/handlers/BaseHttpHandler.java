@@ -7,7 +7,7 @@ import com.yandex.taskmanagerapp.service.TaskManager;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class BaseHttpHandler {
+public abstract class BaseHttpHandler {
     protected TaskManager taskManager;
     protected Gson gson = Constant.getGsonObject();
 

@@ -8,7 +8,7 @@
     </content>
     <orderEntry type="jdk" jdkName="corretto-21" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="" scope="TEST">
+    <orderEntry type="module-library" exported="">
       <library name="JUnit5.8.1">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/junit-jupiter-5.8.1.jar!/" />
@@ -47,6 +47,75 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="src" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../библиотеки java/m1-t25-api/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../библиотеки java/m1-t25-api/lib/gson-2.9.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/documentation/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/documentation/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/documentation/src/tools/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-api/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-api/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-engine/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-engine/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-migrationsupport/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-params/src/jmh/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-params/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-jupiter-params/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-commons/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-commons/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-console/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-engine/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-engine/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-launcher/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-launcher/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-reporting/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-reporting/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-suite-api/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-suite-engine/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-platform-testkit/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-vintage-engine/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-vintage-engine/src/testFixtures/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/junit-vintage-engine/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/jupiter-tests/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tests/src/jmh/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tests/src/processStarter/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tests/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tests/src/test/resources/modules-2500" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/graalvm-starter/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/graalvm-starter/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/gradle-missing-engine/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/jupiter-starter/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/jupiter-starter/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/maven-surefire-compatibility/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/standalone/src" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/projects/vintage/src/test/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/src/archUnit/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../библиотеки java/junit-framework/platform-tooling-support-tests/src/test/java" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>

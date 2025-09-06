@@ -10,16 +10,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Constant {
-    public static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    public static final Integer port = 8080;
-    public static final String host = "http://localhost:" + port + "/";
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static Gson getGsonObject() {
-        LocalDateTimeAdapter localTimeTypeAdapter = new LocalDateTimeAdapter();
-        DurationAdapter durationTypeAdapter = new DurationAdapter();
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(LocalDateTime.class, localTimeTypeAdapter);
-        gsonBuilder.registerTypeAdapter(Duration.class, durationTypeAdapter);
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
         Gson gson = gsonBuilder.create();
         return gson;
     }

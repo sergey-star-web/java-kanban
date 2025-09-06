@@ -35,6 +35,7 @@ public class EpicHandler extends SubtaskHandler implements HttpHandler {
         Integer pathId = getPathId(getPath(httpExchange));
         String[] path = getPath(httpExchange);
         String subtasksInEpicPath = null;
+        // Если кол-во элементов в массиве path больше трех, значит передан subtasks, для вывода сабтасков эпика
         if (path.length > 3) {
             subtasksInEpicPath = path[3];
         }

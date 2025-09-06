@@ -173,7 +173,7 @@ public class Task {
 
     public String getStartTimeString() {
         LocalDateTime startTimeOPtional = this.startTime;
-        return startTimeOPtional.format(Constant.dateFormat);
+        return startTimeOPtional.format(Constant.DATE_FORMAT);
     }
 
     public void setStartTime(LocalDateTime startTime) {
@@ -183,7 +183,7 @@ public class Task {
 
     public void setStartTimeString(String startTime) {
         if (startTime != null) {
-            this.startTime = LocalDateTime.parse(startTime, Constant.dateFormat);
+            this.startTime = LocalDateTime.parse(startTime, Constant.DATE_FORMAT);
             calcEndTime();
         } else {
             this.startTime = null;
