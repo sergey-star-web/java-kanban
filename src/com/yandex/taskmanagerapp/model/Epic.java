@@ -1,7 +1,10 @@
 package com.yandex.taskmanagerapp.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.yandex.taskmanagerapp.constants.Constant;
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
 
@@ -56,5 +59,34 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
         this.subtasks.add(subtask);
+    }
+
+    @Override
+    public void setEndTime(LocalDateTime endTime) {
+        super.endTime = endTime;
+    }
+
+    @Override
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    @Override
+    public void setDurationInt(Integer duration) {
+        this.duration = Duration.ofMinutes(duration);
+    }
+
+    @Override
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public void setStartTimeString(String startTime) {
+        if (startTime != null) {
+            this.startTime = LocalDateTime.parse(startTime, Constant.DATE_FORMAT);
+        } else {
+            this.startTime = null;
+        }
     }
 }

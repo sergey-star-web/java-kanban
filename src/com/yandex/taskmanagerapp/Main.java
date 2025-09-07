@@ -1,5 +1,6 @@
 package com.yandex.taskmanagerapp;
 
+import com.yandex.taskmanagerapp.api.HttpTaskServer;
 import com.yandex.taskmanagerapp.exceptions.ManagerSaveException;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
@@ -10,6 +11,8 @@ import com.yandex.taskmanagerapp.service.Managers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class Main {
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка во время обработки файла.");
         }
+
+        HttpTaskServer taskserver = new HttpTaskServer(ftm);
 
         ftm.addTask(task1);
         ftm.addTask(task2);
@@ -116,8 +121,18 @@ public class Main {
 
         getSubTask = (Subtask) ftm.getTask(sub3.getId());
         System.out.println(getSubTask);
-
         System.out.println();
+
+        String path = HttpTaskServer.HOST + "tasks";
+        URI uri = URI.create(path);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Content-Type", "application/json;charset=utf-8")
+                .build();
+        taskserver.start();
+        taskserver.handleRequest(request);
+        System.out.println();
+
         historyTasks = ftm.getHistory();
         System.out.println("История просмотров1.5: ");
         for (Task task11 : historyTasks) {
@@ -203,6 +218,6 @@ public class Main {
             System.out.println(task + " Дата окончания: " + task.getEndTime());
         }
         System.out.println();
-
+        taskserver.stop();
     }
 }

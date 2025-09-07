@@ -2,6 +2,7 @@ package com.yandex.taskmanagerapp.service;
 
 import com.yandex.taskmanagerapp.enums.Status;
 import com.yandex.taskmanagerapp.enums.TypeTask;
+import com.yandex.taskmanagerapp.exceptions.NotFoundException;
 import com.yandex.taskmanagerapp.model.Task;
 import com.yandex.taskmanagerapp.model.Subtask;
 import com.yandex.taskmanagerapp.model.Epic;
@@ -65,12 +66,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(Integer id) {
-        Task task = this.tasks.get(id);
-        if (task != null) {
-            this.historyManager.add(task);
+    public Task getTask(Integer id) throws NotFoundException {
+        try {
+            Task task = this.tasks.get(id);
+            if (task != null) {
+                this.historyManager.add(task);
+            }
+            return task;
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Задача с ID " + id + " не найдена");
         }
-        return task;
     }
 
     @Override
@@ -101,25 +106,27 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTask(Integer id) {
         Task task = this.tasks.get(id);
-        Epic epic = null;
-        if (task.getType() == TypeTask.EPIC) {
-            epic = (Epic) this.tasks.get(id);
+        if (task != null) {
+            Epic epic = null;
+            if (task.getType() == TypeTask.EPIC) {
+                epic = (Epic) this.tasks.get(id);
+            }
+            if (epic != null) {
+                epic.getSubtasks()
+                        .stream()
+                        .map(t -> this.tasks.remove(t.getId()));
+            }
+            if (task.getType() == TypeTask.SUBTASK) {
+                Subtask subtask = (Subtask) task;
+                epic = (Epic) this.tasks.get(subtask.getIdEpic());
+                epic.removeSubtask(subtask);
+                updateDataInEpic(epic.getId());
+            }
+            if (task.getType() != TypeTask.EPIC) {
+                this.prioritizedTasks.remove(task);
+            }
+            this.tasks.remove(id);
         }
-        if (epic != null) {
-            epic.getSubtasks()
-                    .stream()
-                    .map(t -> this.tasks.remove(t.getId()));
-        }
-        if (task.getType() == TypeTask.SUBTASK) {
-            Subtask subtask = (Subtask) task;
-            epic = (Epic) this.tasks.get(subtask.getIdEpic());
-            epic.removeSubtask(subtask);
-            updateDataInEpic(epic.getId());
-        }
-        if (task.getType() != TypeTask.EPIC) {
-            this.prioritizedTasks.remove(task);
-        }
-        this.tasks.remove(id);
     }
 
     private boolean checkIdForCorrect(Task task) {
@@ -307,6 +314,7 @@ public class InMemoryTaskManager implements TaskManager {
         return this.prioritizedTasks.stream().collect(Collectors.toList());
     }
 
+    @Override
     public boolean isIntersectionProblem(Task task) {
         if (task.getType() == TypeTask.EPIC || getPrioritizedTasks().isEmpty()) {
             return false;
